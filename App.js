@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {View} from 'react-native';
+import LoginScreen from "./components/screens/loginScreen/LoginScreen";
+import RegistrationScreen from "./components/screens/registrationScreen/RegistrationScreen";
+import RegistrationEmailSentScreen from "./components/screens/registrationEmailSentScreen/RegistrationEmailSentScreen";
+import ForgotPasswordScreen from "./components/screens/forgotPasswordScreen/forgotPasswordScreen";
+import ResetEmailSentScreen from "./components/screens/resetEmailSentScreen/ResetEmailSentScreen";
+import ResetLinkExpiredScreen from "./components/screens/resetLinkExpiredScreen/ResetLinkExpiredScreen";
+import PasswordResetScreen from "./components/screens/passwordResetScreen/PasswordResetScreen";
+import PasswordResetSuccessScreen from "./components/screens/passwordResetSuccessScreen/PasswordResetSuccessScreen";
+import HomeScreen from "./components/screens/homeScreen/HomeScreen";
+import MyTrendsScreen from "./components/screens/myTrendsScreen/MyTrendsScreen";
+import TopTrendsScreen from "./components/screens/topTrendsScreen/TopTrendsScreen";
+import ProfileSettingsScreen from "./components/screens/profileSettingsScreen/ProfileSettingsScreen";
+import CompanyDetailsScreen from "./components/screens/companyDetailsScreen/CompanyDetailsScreen";
+import CauseDetailsScreen from "./components/screens/causeDetailsScreen/CauseDetailsScreen";
+import SearchScreen from "./components/screens/searchScreen/SearchScreen";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <View>
+            <SearchScreen/>
+      </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
