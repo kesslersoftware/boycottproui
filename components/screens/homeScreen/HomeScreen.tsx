@@ -7,8 +7,22 @@ import {sharedStyles} from "../../../styles/sharedStyles";
 import {sh} from "../../helpers/screenDimensionsutilitiy";
 import {BODY_TEXT_DARK} from "../../../styles/constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+import {User} from "../../../types/DataModels";
 
-export default function HomeScreen() {
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
+type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Search'>
+
+type Props = {
+    user: User
+}
+export default function HomeScreen({ user: User }: Props) {
+    // navigation constants
+    const navigation = useNavigation<HomeScreenNavigationProp>();
+
     const [companies, setCompanies] = useState<number>(120)
     const [causes, setCauses] = useState<number>(500)
     const [topCompany, setTopCompany] = useState<string>('McDonalds')
@@ -17,20 +31,20 @@ export default function HomeScreen() {
     const [topCause, setTopCause] = useState<string>('animal rights')
     return(
         <View style={sharedStyles.containerSettings}>
-            <Pressable style={styles.leftBtn}>
+            {/*<Pressable style={styles.leftBtn} onPress={() => navigation.navigate('MyTrends')}>
                 <Icon
                     name='arrow-left'
                     size={sh * 0.028}
                     color={BODY_TEXT_DARK}
                 />
             </Pressable>
-            <Pressable style={styles.rightBtn}>
+            <Pressable style={styles.rightBtn} onPress={() => navigation.navigate('TopTrends')}>
                 <Icon
                     name='arrow-right'
                     size={sh * 0.028}
                     color={BODY_TEXT_DARK}
                 />
-            </Pressable>
+            </Pressable>*/}
             <View>
                 <HeaderBar/>
                 <Slogan/>
@@ -50,34 +64,31 @@ export default function HomeScreen() {
                     <Text style={styles.topCauseFollowed}>top cause that people are following:</Text>
                     <Text style={styles.topCause}>{topCause}</Text>
                 </View>
-                <Pressable style={styles.topTrendsBtn}>
+                <Pressable style={styles.topTrendsBtn} onPress={() => navigation.navigate('TopTrends')}>
                     <View style={styles.topTrendsContent}>
                         <Text style={styles.topTrendsBtnTxt}>Top Trends</Text>
-                        <Text style={styles.topTrendsBtnArrow}>R</Text>
                     </View>
                 </Pressable>
-                <Pressable style={styles.myTrendsBtn}>
+                <Pressable style={styles.myTrendsBtn} onPress={() => navigation.navigate('MyTrends')}>
                     <View style={styles.myTrendsContent}>
-                        <Text style={styles.myTrendsBtnArrow}>L</Text>
                         <Text style={styles.myTrendsBtnTxt}>My Trends</Text>
                     </View>
                 </Pressable>
-                <Pressable style={styles.profileSettingBtn}>
+                <Pressable style={styles.profileSettingBtn} onPress={() => navigation.navigate('ProfileSettings')} >
                     <Text style={styles.profileSettingBtnTxt}>Profile Settings</Text>
                 </Pressable>
-                <Pressable style={styles.searchBtn}>
+                <Pressable style={styles.searchBtn} onPress={() => navigation.navigate('Search')}>
                     <View style={styles.searchBtnContent}>
                         <Text style={styles.searchBtnTxt}>Search Companies & Causes</Text>
-                        <Text style={styles.searchBtnArrow}>D</Text>
                     </View>
                 </Pressable>
-                <Pressable style={styles.bottomBtn}>
+                {/*<Pressable style={styles.bottomBtn} onPress={() => navigation.navigate('Search')}>
                     <Icon
                         name='arrow-down'
                         size={sh * 0.028}
                         color={BODY_TEXT_DARK}
                     />
-                </Pressable>
+                </Pressable>*/}
             </View>
         </View>
     );

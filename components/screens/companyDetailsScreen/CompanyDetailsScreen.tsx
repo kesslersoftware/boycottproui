@@ -13,6 +13,12 @@ import {
     COMPDTLS_RMV_BTN_WIDTH, COMPDTLS_VIEW_CAUSE_BTN_HEIGHT, COMPDTLS_VIEW_CAUSE_BTN_TOP_MARGIN,
     COMPDTLS_VIEW_CAUSE_BTN_WIDTH
 } from "../../../styles/constants";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+
+type CompanyDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CompanyDetails'>
+type CompanyDetailsScreenRouteProp = RouteProp<RootStackParamList, 'CompanyDetails'>
 
 const myCompanies=[
     { description: 'Company A', numPeople: 1421 },
@@ -27,6 +33,11 @@ const companies=[
 const heading="list of causes";
 
 export default function CompanyDetailsScreen() {
+    // navigation constants
+    const navigation = useNavigation<CompanyDetailsScreenNavigationProp>();
+    const route = useRoute<CompanyDetailsScreenRouteProp>();
+    const user = route.params.user;
+
     const [companyName,setCompanyName] = useState<string>("McDonalds");
     const [items,setItems] = useState<ListItem[]>(companies);
 
@@ -34,7 +45,7 @@ export default function CompanyDetailsScreen() {
         <View style={sharedStyles.containerSettings}>
             <HeaderBar/>
             <View style={sharedStyles.homeAndSloganView}>
-                <HomeBackButton label="back" onPress={() => console.log('Go back')} />
+                <HomeBackButton label="back" onPress={() => navigation.navigate('Home')} />
                 <Slogan />
             </View>
             <View style={sharedStyles.titleContainer}>

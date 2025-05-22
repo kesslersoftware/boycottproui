@@ -15,11 +15,21 @@ import {
     OFF_WHITE,
     WHITE
 } from "../../../styles/constants";
-import CompaniesOrCausesList from '../../helpers/companiesOrCauses/CompaniesOrCausesList'
+import TrendsList from '../../helpers/companiesOrCauses/TrendsList'
 import {sharedStyles} from "../../../styles/sharedStyles";
-import {sh} from "../../helpers/screenDimensionsutilitiy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import ToggleSection from "../../helpers/toggle/ToggleSection";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+import {User} from "../../../types/DataModels";
+
+type MyTrendsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MyTrends'>
+type MyTrendsScreenRouteProp = RouteProp<RootStackParamList, 'MyTrends'>
+
+type Props = {
+    user: User
+}
 
 const companies = [
     { name: 'Company A', rank: 1 },
@@ -34,21 +44,24 @@ const causes = [
 function handleDelete(name: string) {
     console.log('Delete', name)
 }
-export default function MyTrendsScreen() {
+export default function MyTrendsScreen({ user: User }: Props) {
+    // navigation constants
+    const navigation = useNavigation<MyTrendsScreenNavigationProp>();
+
     const [isToggleOn, setIsToggleOn] = useState(false)
     return(
         <View style={sharedStyles.containerSettings}>
-            <Pressable style={styles.rightBtn}>
+            {/*<Pressable style={styles.rightBtn}>
                 <Icon
-                    name='arrow-left'
+                    name='arrow-right'
                     size={MY_TR_ARRW_BTN_WIDTH}
                     color={BODY_TEXT_DARK}
                 />
-            </Pressable>
+            </Pressable>*/}
             <View>
                 <HeaderBar/>
                 <View style={sharedStyles.homeAndSloganView}>
-                    <HomeBackButton label="Home" onPress={() => console.log('Go back')} />
+                    <HomeBackButton label="Home" onPress={() => navigation.navigate('Home')} />
                     <Slogan />
                 </View>
                 <View style={sharedStyles.titleContainer}>
@@ -57,8 +70,8 @@ export default function MyTrendsScreen() {
                 <ToggleSection isToggleOn={isToggleOn} setIsToggleOn={setIsToggleOn}
                                footerText={"Companies that I am boycotting"}
                                otherFooterText={"Causes that I believe in"}/>
-                {!isToggleOn && <CompaniesOrCausesList items={companies} onDelete={handleDelete} />}
-                {isToggleOn && <CompaniesOrCausesList items={causes} onDelete={handleDelete} />}
+                {!isToggleOn && <TrendsList items={companies} onDelete={handleDelete} />}
+                {isToggleOn && <TrendsList items={causes} onDelete={handleDelete} />}
             </View>
         </View>
     );

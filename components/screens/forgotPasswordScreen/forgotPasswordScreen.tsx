@@ -1,21 +1,23 @@
 import {View, Text, Pressable, TextInput} from "react-native";
 import {styles} from "../forgotPasswordScreen/ForgotPasswordScreenStyles";
-import StatusBar from "../../helpers/statusBar/StatusBar";
 import HeaderBar from "../../helpers/headerBar/HeaderBar";
 import ErrorSection from "../../helpers/errorSection/ErrorSection";
 import React, {useState} from "react";
 import {sharedStyles} from "../../../styles/sharedStyles";
 import {
     FP_EMAIL_TOP_MARGIN,
-    FP_REGISTER_BTN_HEIGHT, FP_REGISTER_BTN_TOP_MARGIN,
-    FP_REGISTER_BTN_WIDTH, FP_RESET_BTN_HEIGHT, FP_RESET_BTN_TOP_MARGIN, FP_RESET_BTN_WIDTH,
-    RES_REGISTER_BTN_HEIGHT,
-    RES_REGISTER_BTN_TOP_MARGIN,
-    RES_REGISTER_BTN_WIDTH, RG_EMAIL_TOP_MARGIN
+    FP_RESET_BTN_HEIGHT,
+    FP_RESET_BTN_TOP_MARGIN,
+    FP_RESET_BTN_WIDTH
 } from "../../../styles/constants";
 import CenteredButton from "../../helpers/button/CenteredButton";
 import FormTextField from "../../helpers/labelAndField/FormTextField";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
 
+type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ForgotPassword'>
+type ForgotPasswordScreenRouteProp = RouteProp<RootStackParamList, 'ForgotPassword'>
 const handleErrorLink = (target: string) => {
     if (target === 'resendEmail') {
         console.log('Resending email…')
@@ -23,6 +25,11 @@ const handleErrorLink = (target: string) => {
     }
 }
 export default function ForgotPasswordScreen() {
+    // navigation constants
+    const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
+    const route = useRoute<ForgotPasswordScreenRouteProp>();
+    const user = route.params.user;
+
     const [visibleErrors, setVisibleErrors] = useState<number[]>([10]) // 2,3,4,5,0
     const [email, setEmail] = useState('')
     return(
@@ -47,7 +54,7 @@ export default function ForgotPasswordScreen() {
                 widthPercent={FP_RESET_BTN_WIDTH}
                 heightPercent={FP_RESET_BTN_HEIGHT}
                 marginTopPercent={FP_RESET_BTN_TOP_MARGIN}
-                onPress={() => console.log('reset password pressed')}
+                onPress={() => navigation.navigate('ResetEmailSent')}
             />
         </View>
     );

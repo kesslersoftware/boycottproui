@@ -1,4 +1,4 @@
-import {View, Text, TextInput} from 'react-native'
+import {View, Text} from 'react-native'
 import {styles} from "../loginScreen/LoginScreenStyles";
 import HeaderBar from "../../helpers/headerBar/HeaderBar";
 import React, { useState } from 'react'
@@ -16,8 +16,13 @@ import {
     SUCCESS_GREEN, LS_LOGIN_PASSWORD_TOP_MARGIN
 } from "../../../styles/constants";
 import FormTextField from "../../helpers/labelAndField/FormTextField";
-import {sh} from "../../helpers/screenDimensionsutilitiy";
 import FormPasswordField from "../../helpers/labelAndField/FormPasswordField";
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
+type LoginScreenRouteProp = RouteProp<RootStackParamList, 'Login'>
 
 const handleErrorLink = (target: string) => {
     if (target === 'resendEmail') {
@@ -26,6 +31,11 @@ const handleErrorLink = (target: string) => {
     }
 }
 export default function LoginScreen() {
+    // navigation constants
+    const navigation = useNavigation<LoginScreenNavigationProp>();
+    const route = useRoute<LoginScreenRouteProp>();
+    const user = route.params.user;
+
     const [visibleErrors, setVisibleErrors] = useState<number[]>([2,3,4]) // 2,3,4,5,0
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -54,13 +64,13 @@ export default function LoginScreen() {
                 value=""
                 onChangeText={setPassword}
             />
-            <Text style={styles.forgotPassword}>forgot password?</Text>
+            <Text style={styles.forgotPassword} onPress={() => navigation.navigate('ForgotPassword')}>forgot password?</Text>
             <CenteredButton
                 text="Login"
                 widthPercent={LS_LOGIN_BTN_WIDTH}
                 heightPercent={LS_LOGIN_BTN_HEIGHT}
                 marginTopPercent={LS_LOGIN_BTN_TOP_MARGIN}
-                onPress={() => console.log('Login pressed')}
+                onPress={() => navigation.navigate('Home')}
             />
             <Text style={styles.noAccountText}>Don’t have an account?</Text>
             <CenteredButton
@@ -69,7 +79,7 @@ export default function LoginScreen() {
                 widthPercent={LS_REGISTER_BTN_WIDTH}
                 heightPercent={LS_REGISTER_BTN_HEIGHT}
                 marginTopPercent={LS_REGISTER_BTN_TOP_MARGIN}
-                onPress={() => console.log('Register pressed')}
+                onPress={() => navigation.navigate('Registration')}
             />
         </View>
     )

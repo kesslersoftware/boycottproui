@@ -11,6 +11,7 @@ type ToggleSectionProps = {
     leftLabel?: string
     rightLabel?: string
     marginTop?: number
+    includeFooter?: boolean
 }
 
 export default function ToggleSection({ isToggleOn,
@@ -19,7 +20,8 @@ export default function ToggleSection({ isToggleOn,
                                         otherFooterText,
                                         leftLabel = 'Companies',
                                         rightLabel = 'Causes',
-                                        marginTop = DEFAULT_TOGGLE_TOP_MARGIN
+                                        marginTop = DEFAULT_TOGGLE_TOP_MARGIN,
+                                        includeFooter = true
                                       }: ToggleSectionProps) {
     return (
         <View>
@@ -37,10 +39,13 @@ export default function ToggleSection({ isToggleOn,
                     <Text style={sharedStyles.myCausesTxt}>{rightLabel}</Text>
                 </View>
             </View>
-            <View style={sharedStyles.footerWrapper}>
-                {!isToggleOn && footerText && <Text style={sharedStyles.toggleFooterText}>{footerText}</Text>}
-                {isToggleOn && footerText && <Text style={sharedStyles.toggleFooterText}>{otherFooterText}</Text>}
-            </View>
+            {
+                includeFooter &&
+                <View style={sharedStyles.footerWrapper}>
+                    {!isToggleOn && footerText && <Text style={sharedStyles.toggleFooterText}>{footerText}</Text>}
+                    {isToggleOn && footerText && <Text style={sharedStyles.toggleFooterText}>{otherFooterText}</Text>}
+                </View>
+            }
         </View>
     );
 }

@@ -6,16 +6,12 @@ const sh = Dimensions.get('window').height - topInset
 export const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 8
+        /*justifyContent: 'flex-end',
+        marginVertical: 0*/
     },
     checkbox: {
         width: 24,
         height: 24,
-        /*width: sw * 0.058,
-        height: sh * 0.026172,*/
-        marginLeft: sw * 0.102,
-        marginTop: sh * 0.032,
         borderWidth: 2,
         borderColor: BODY_TEXT_DARK,
         backgroundColor: FORM_FIELD_BORDER,
@@ -25,9 +21,8 @@ export const styles = StyleSheet.create({
         backgroundColor: LINK_TEXT,
         borderColor: LINK_TEXT
     },
-    termsOfService: {
+    messageTxt: {
         marginLeft: sw * 0.022,
-        marginTop: sh * 0.035,
         fontFamily: 'Inter',
         fontWeight: '700',
         fontSize: sh * 0.0160,

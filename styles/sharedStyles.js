@@ -102,17 +102,15 @@ export const sharedStyles = StyleSheet.create({
     },
     toggleFooterText: {
         marginTop: sh * 0.05,
-        fontSize: sh * 0.015,
+        fontSize: sh * 0.015, // sh * 0.0153
         /*textAlign: 'center',*/
         fontFamily: 'Inter',
         fontWeight: '700',
         color: BODY_TEXT_DARK,
     },
     formLabelAndFieldContainer: {
-        width: sw,
         flexDirection: 'column',
         alignItems: 'flex-start',
-        paddingHorizontal: sw * 0.102
     },
     label: {
         fontSize: sh * 0.0218,

@@ -10,6 +10,8 @@ type FormPasswordFieldProps = {
     labelMarginTop: number
     value?: string
     onChangeText?: (text: string) => void
+    width?: number
+    paddingHorizontal?: number
 }
 
 export default function FormPasswordField({
@@ -17,11 +19,16 @@ export default function FormPasswordField({
                                               labelMarginTop,
                                               value,
                                               onChangeText,
+                                              width = 1.00,
+                                              paddingHorizontal = 0.102
                                           }: FormPasswordFieldProps) {
     const [showPassword, setShowPassword] = useState(false)
 
     return (
-        <View style={[sharedStyles.formLabelAndFieldContainer, { marginTop: labelMarginTop}]}>
+        <View style={[sharedStyles.formLabelAndFieldContainer,
+            { marginTop: labelMarginTop},
+            { width: sw * width },
+            { paddingHorizontal: sw * paddingHorizontal}]}>
             <Text style={sharedStyles.label}>
                 {labelText}
             </Text>

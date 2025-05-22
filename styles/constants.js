@@ -17,6 +17,9 @@ export const GREY = '#767577'
 export const ALMOST_WHITE = '#eeeeee'
 export const PLACE_HOLDER = "#999"
 export const DARK_GREY = "#3e3e3e"
+export const COLUMBIA_BLUE = "#BBDEFB"
+export const CYAN = "#0288d1"
+
 export const DEFAULT_TOGGLE_TOP_MARGIN = sh * 0.155
 // LoginScreen
 export const LS_LOGIN_USERNAME_TOP_MARGIN = sh * 0.0040
@@ -79,7 +82,11 @@ export const COMPDTLS_VIEW_CAUSE_BTN_TOP_MARGIN = 0.024
 
 // SearchScreen
 export const SS_SEACRH_TOP_MARGIN = sh * 0.0
+export const SS_REASON_TOP_MARGIN = sh * 0.0
 export const SS_TOGGLE_TOP_MARGIN = sh * 0.021
+export const SS_SAVE_BTN_WIDTH = 0.325
+export const SS_SAVE_BTN_HEIGHT = 0.0403
+export const SS_SAVE_BTN_TOP_MARGIN = 0.0140
 // MyTrendsScreen
 export const MY_TR_ARRW_BTN_WIDTH = sh * 0.028
 // TopTrendsScreen

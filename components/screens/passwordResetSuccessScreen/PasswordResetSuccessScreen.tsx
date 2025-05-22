@@ -11,8 +11,19 @@ import {
     RESET_RETURN_BTN_WIDTH
 } from "../../../styles/constants";
 import CenteredButton from "../../helpers/button/CenteredButton";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+
+type PasswordResetSuccessScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PasswordResetSuccess'>
+type PasswordResetSuccessScreenRouteProp = RouteProp<RootStackParamList, 'PasswordResetSuccess'>
 
 export default function PasswordResetSuccessScreen() {
+    // navigation constants
+    const navigation = useNavigation<PasswordResetSuccessScreenNavigationProp>();
+    const route = useRoute<PasswordResetSuccessScreenRouteProp>();
+    const user = route.params.user;
+
     const [gotoLogin, setGotoLogin] = useState<boolean>(true);
     return(
         <View style={sharedStyles.containerSettings}>
@@ -28,7 +39,7 @@ export default function PasswordResetSuccessScreen() {
                             widthPercent={PRS_RETURN_BTN_WIDTH}
                             heightPercent={PRS_RETURN_BTN_HEIGHT}
                             marginTopPercent={PRS_RETURN_BTN_TOP_MARGIN}
-                            onPress={() => console.log('return to login pressed')}
+                            onPress={() => navigation.navigate('Login')}
                         />
                     )
                 }
@@ -40,7 +51,7 @@ export default function PasswordResetSuccessScreen() {
                             widthPercent={PRS_RETURN_BTN_WIDTH}
                             heightPercent={PRS_RETURN_BTN_HEIGHT}
                             marginTopPercent={PRS_RETURN_BTN_TOP_MARGIN}
-                            onPress={() => console.log('return to login pressed')}
+                            onPress={() => navigation.navigate('Home')}
                         />
                     )
                 }

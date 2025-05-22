@@ -6,14 +6,18 @@ import ErrorSection from "../../helpers/errorSection/ErrorSection";
 import {sharedStyles} from "../../../styles/sharedStyles";
 import FormPasswordField from "../../helpers/labelAndField/FormPasswordField";
 import {
-    PR_RESET_BTN_WIDTH, FP_REGISTER_BTN_TOP_MARGIN,
-    FP_REGISTER_BTN_WIDTH,
+    PR_RESET_BTN_WIDTH,
     PR_PASSWORD_TOP_MARGIN,
     PR_REDO_PASSWORD_TOP_MARGIN,
-    RG_PASSWORD_TOP_MARGIN,
-    RG_REDO_PASSWORD_TOP_MARGIN, PR_RESET_BTN_HEIGHT, PR_RESET_BTN_TOP_MARGIN
+    PR_RESET_BTN_HEIGHT, PR_RESET_BTN_TOP_MARGIN
 } from "../../../styles/constants";
 import CenteredButton from "../../helpers/button/CenteredButton";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+
+type PasswordResetScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PasswordReset'>
+type PasswordResetScreenRouteProp = RouteProp<RootStackParamList, 'PasswordReset'>
 
 const handleErrorLink = (target: string) => {
     if (target === 'resendEmail') {
@@ -22,6 +26,11 @@ const handleErrorLink = (target: string) => {
     }
 }
 export default function PasswordResetScreen() {
+    // navigation constants
+    const navigation = useNavigation<PasswordResetScreenNavigationProp>();
+    const route = useRoute<PasswordResetScreenRouteProp>();
+    const user = route.params.user;
+
     const [visibleErrors, setVisibleErrors] = useState<number[]>([11]) // 2,3,4,5,0
     const [password, setPassword] = useState('')
     const [redoPassword, setRedoPassword] = useState('')
@@ -53,7 +62,7 @@ export default function PasswordResetScreen() {
                 widthPercent={PR_RESET_BTN_WIDTH}
                 heightPercent={PR_RESET_BTN_HEIGHT}
                 marginTopPercent={PR_RESET_BTN_TOP_MARGIN}
-                onPress={() => console.log('reset password pressed')}
+                onPress={() => navigation.navigate('PasswordResetSuccess')}
             />
         </View>
     );

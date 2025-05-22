@@ -15,15 +15,26 @@ import {
     RESET_RETURN_BTN_TOP_MARGIN,
     RESET_RETURN_BTN_WIDTH
 } from "../../../styles/constants";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+
+type ProfileSettingsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProfileSettings'>
+type ProfileSettingsScreenRouteProp = RouteProp<RootStackParamList, 'ProfileSettings'>
 
 export default function ProfileSettingsScreen() {
+    // navigation constants
+    const navigation = useNavigation<ProfileSettingsScreenNavigationProp>();
+    const route = useRoute<ProfileSettingsScreenRouteProp>();
+    const user = route.params.user;
+
     const [username, setUsername] = useState('')
     return(
         <View style={sharedStyles.containerSettings}>
             <View>
                 <HeaderBar/>
                 <View style={sharedStyles.homeAndSloganView}>
-                    <HomeBackButton label="back" onPress={() => console.log('Go back')} />
+                    <HomeBackButton label="back" onPress={() => navigation.navigate('Home')} />
                     <Slogan />
                 </View>
                 <View style={sharedStyles.titleContainer}>
@@ -35,7 +46,7 @@ export default function ProfileSettingsScreen() {
                 </View>
                 <View style={styles.textRow}>
                     <Text style={styles.passwordLabel}>password:</Text>
-                    <Text style={styles.passwordLink} onPress={() => console.log('Change Password')}>
+                    <Text style={styles.passwordLink} onPress={() => navigation.navigate('PasswordReset')}>
                         change password
                     </Text>
                 </View>

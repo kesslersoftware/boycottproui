@@ -1,18 +1,26 @@
 import {View, Text, Pressable} from "react-native";
 import {styles} from "../resetEmailSentScreen/ResetEmailSentScreenStyles";
-import StatusBar from "../../helpers/statusBar/StatusBar";
 import HeaderBar from "../../helpers/headerBar/HeaderBar";
 import React from "react";
 import {sharedStyles} from "../../../styles/sharedStyles";
 import {
-    RES_REGISTER_BTN_HEIGHT,
-    RES_REGISTER_BTN_TOP_MARGIN,
-    RES_REGISTER_BTN_WIDTH, RESET_RETURN_BTN_HEIGHT, RESET_RETURN_BTN_TOP_MARGIN,
+    RESET_RETURN_BTN_HEIGHT, RESET_RETURN_BTN_TOP_MARGIN,
     RESET_RETURN_BTN_WIDTH
 } from "../../../styles/constants";
 import CenteredButton from "../../helpers/button/CenteredButton";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+
+type ResetEmailSentScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ResetEmailSent'>
+type ResetEmailSentScreenRouteProp = RouteProp<RootStackParamList, 'ResetEmailSent'>
 
 export default function ResetEmailSentScreen() {
+    // navigation constants
+    const navigation = useNavigation<ResetEmailSentScreenNavigationProp>();
+    const route = useRoute<ResetEmailSentScreenRouteProp>();
+    const user = route.params.user;
+
     return(
         <View style={sharedStyles.containerSettings}>
             <HeaderBar/>
@@ -25,7 +33,7 @@ export default function ResetEmailSentScreen() {
                     widthPercent={RESET_RETURN_BTN_WIDTH}
                     heightPercent={RESET_RETURN_BTN_HEIGHT}
                     marginTopPercent={RESET_RETURN_BTN_TOP_MARGIN}
-                    onPress={() => console.log('return to login pressed')}
+                    onPress={() => navigation.navigate('Login')}
                 />
             </View>
         </View>

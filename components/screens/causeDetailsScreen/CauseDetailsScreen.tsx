@@ -6,6 +6,12 @@ import React, {useState} from "react";
 import Slogan from "../../helpers/slogan/Slogan";
 import HomeBackButton from "../../helpers/homeBackButton/HomeBackButton";
 import CompanyCausesList, {ListItem} from "../../helpers/companiesOrCauses/CompanyCausesList";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import {RootStackParamList} from "../../../types/types";
+
+type CauseDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CauseDetails'>
+type CauseDetailsScreenRouteProp = RouteProp<RootStackParamList, 'CauseDetails'>
 
 const myCompanies=[
     { description: 'McDonalds'},
@@ -20,6 +26,10 @@ const companies=[
 const heading="list of companies";
 
 export default function CauseDetailsScreen() {
+    // navigation constants
+    const navigation = useNavigation<CauseDetailsScreenNavigationProp>();
+    const route = useRoute<CauseDetailsScreenRouteProp>();
+    const user = route.params.user;
     const [causeName,setCauseName] = useState<string>("Animal Rights");
     const [items,setItems] = useState<ListItem[]>(companies);
     const [myItems,setMyItems] = useState<ListItem[]>(myCompanies);
@@ -28,7 +38,7 @@ export default function CauseDetailsScreen() {
             <View>
                 <HeaderBar/>
                 <View style={sharedStyles.homeAndSloganView}>
-                    <HomeBackButton label="back" onPress={() => console.log('Go back')} />
+                    <HomeBackButton label="back" onPress={() => navigation.navigate('Home')} />
                     <Slogan />
                 </View>
                 <View style={sharedStyles.titleContainer}>

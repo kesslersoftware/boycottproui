@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlatList, View, Text, Pressable } from 'react-native'
-import { styles } from './CompaniesOrCausesListStyles'
+import { styles } from './TrendsListStyles'
 import {sw} from "../screenDimensionsutilitiy";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
     onDelete: (name: string) => void
 }
 
-export default function CompaniesOrCausesList({ items, onDelete }: Props) {
+export default function TrendsList({ items, onDelete }: Props) {
     const renderItem = ({ item }: { item: { name: string; rank: number } }) => (
         <View style={styles.listItemRow}>
             {item.rank!=null && <View style={styles.listItemRank}>
