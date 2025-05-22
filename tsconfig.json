@@ -1,0 +1,21 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "baseUrl": ".",                         // allows absolute imports
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true
+  },
+  "include": [
+    "components/**/*",
+    "styles/**/*",
+    "assets/**/*",
+    "node_modules",
+    "types/**/*",
+    "App"
+  ]
+}
