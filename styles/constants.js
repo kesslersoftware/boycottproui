@@ -1,4 +1,4 @@
-import {sh} from "../components/helpers/screenDimensionsutilitiy";
+import {sh} from "../src/components/screenDimensionsutilitiy";
 
 // defaults
 export const APP_BACKGROUND = '#F4F6F8'
@@ -19,10 +19,10 @@ export const PLACE_HOLDER = "#999"
 export const DARK_GREY = "#3e3e3e"
 export const COLUMBIA_BLUE = "#BBDEFB"
 export const CYAN = "#0288d1"
-
+export const YELLOW = "#BAD32F"
 export const DEFAULT_TOGGLE_TOP_MARGIN = sh * 0.155
 // LoginScreen
-export const LS_LOGIN_USERNAME_TOP_MARGIN = sh * 0.0040
+export const LS_LOGIN_EMAIL_TOP_MARGIN = sh * 0.0040
 export const LS_LOGIN_PASSWORD_TOP_MARGIN = sh * 0.0040
 export const LS_LOGIN_BTN_WIDTH = 0.7620
 export const LS_LOGIN_BTN_HEIGHT = 0.0630
@@ -71,12 +71,13 @@ export const PROFILE_RETURN_BTN_WIDTH = 0.4610
 export const PROFILE_RETURN_BTN_HEIGHT = 0.0403
 export const PROFILE_RETURN_BTN_TOP_MARGIN = 0.0140
 // CompanyDetailsScreen
-export const COMPDTLS_RMV_BTN_WIDTH = 0.4610
-export const COMPDTLS_RMV_BTN_HEIGHT = 0.0403
+export const COMPDTLS_RMV_BTN_WIDTH = 0.510
+export const COMPDTLS_RMV_BTN_HEIGHT = 0.045
 export const COMPDTLS_RMV_BTN_TOP_MARGIN = 0.024
-export const COMPDTLS_VIEW_CAUSE_BTN_WIDTH = 0.4610
-export const COMPDTLS_VIEW_CAUSE_BTN_HEIGHT = 0.0403
-export const COMPDTLS_VIEW_CAUSE_BTN_TOP_MARGIN = 0.024
+export const COMPDTLS_CHG_BTN_WIDTH = 0.520
+export const COMPDTLS_CHG_BTN_HEIGHT = 0.045
+export const COMPDTLS_CHG_BTN_TOP_MARGIN = 0.024
+
 // CauseDetailsScreen - nothing yet
 // HomeScreen
 

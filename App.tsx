@@ -1,54 +1,111 @@
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import LoginScreen from "./components/screens/loginScreen/LoginScreen";
-import RegistrationScreen from "./components/screens/registrationScreen/RegistrationScreen";
-import RegistrationEmailSentScreen from "./components/screens/registrationEmailSentScreen/RegistrationEmailSentScreen";
-import ForgotPasswordScreen from "./components/screens/forgotPasswordScreen/forgotPasswordScreen";
-import ResetEmailSentScreen from "./components/screens/resetEmailSentScreen/ResetEmailSentScreen";
-import ResetLinkExpiredScreen from "./components/screens/resetLinkExpiredScreen/ResetLinkExpiredScreen";
-import PasswordResetScreen from "./components/screens/passwordResetScreen/PasswordResetScreen";
-import PasswordResetSuccessScreen from "./components/screens/passwordResetSuccessScreen/PasswordResetSuccessScreen";
-import HomeScreen from "./components/screens/homeScreen/HomeScreen";
-import MyTrendsScreen from "./components/screens/myTrendsScreen/MyTrendsScreen";
-import TopTrendsScreen from "./components/screens/topTrendsScreen/TopTrendsScreen";
-import ProfileSettingsScreen from "./components/screens/profileSettingsScreen/ProfileSettingsScreen";
-import CompanyDetailsScreen from "./components/screens/companyDetailsScreen/CompanyDetailsScreen";
-import CauseDetailsScreen from "./components/screens/causeDetailsScreen/CauseDetailsScreen";
-import SearchScreen from "./components/screens/searchScreen/SearchScreen";
-import type {User} from "./types/DataModels";
+import 'react-native-gesture-handler';
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto'; // helpful for URL/WHATWG needs
+import '@aws-amplify/react-native';
+import { installFetchLogger } from './src/debug/fetchLogger';
+import { installXHRLogger } from './src/debug/xhrLogger';
+//installFetchLogger(); // <— make sure this runs BEFORE Amplify config/imports
+//installXHRLogger();
+// Run your Amplify configuration (see next section)
+require('./src/amplify');
+//console.log('[polyfill] crypto.getRandomValues:', !!(global as any)?.crypto?.getRandomValues);
+//import { ConsoleLogger } from 'aws-amplify/utils';
 
-import {RootStackParamList} from "./types/types";
-import React, {useState} from "react";
-const Stack = createNativeStackNavigator<RootStackParamList>()
-const newUser:User = {
-    user_id: "1",
-    email_addr: "dylan@dylan.com",
-    username: "schnarbies",
-    passwordHash: "wabba"
-};
 
+// Make Amplify & your own logs verbose during debugging
+//ConsoleLogger.LOG_LEVEL = 'DEBUG';
+//(global as any).LOG_LEVEL = 'DEBUG'; // optional global override
+
+
+
+
+import React, {useEffect} from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from "./src/screens/loginScreen/LoginScreen";
+import RegistrationScreen from "./src/screens/registrationScreen/RegistrationScreen";
+import RegistrationEmailSentScreen from "./src/screens/registrationEmailSentScreen/RegistrationEmailSentScreen";
+import ForgotPasswordScreen from "./src/screens/forgotPasswordScreen/forgotPasswordScreen";
+import ResetEmailSentScreen from "./src/screens/resetEmailSentScreen/ResetEmailSentScreen";
+import ResetLinkExpiredScreen from "./src/screens/resetLinkExpiredScreen/ResetLinkExpiredScreen";
+import PasswordResetScreen from "./src/screens/passwordResetScreen/PasswordResetScreen";
+import HomeScreen from "./src/screens/homeScreen/HomeScreen";
+import MyTrendsScreen from "./src/screens/myTrendsScreen/MyTrendsScreen";
+import TopTrendsScreen from "./src/screens/topTrendsScreen/TopTrendsScreen";
+import ProfileSettingsScreen from "./src/screens/profileSettingsScreen/ProfileSettingsScreen";
+import CompanyDetailsScreen from "./src/screens/companyDetailsScreen/CompanyDetailsScreen";
+import CauseDetailsScreen from "./src/screens/causeDetailsScreen/CauseDetailsScreen";
+import SearchScreen from "./src/screens/searchScreen/SearchScreen";
+import {useAuthHelpers, UserProvider, useUser} from './src/context/UserContext';
+import {fetchAuthSession} from "aws-amplify/auth";
+const Stack = createNativeStackNavigator();
+
+function AuthStack() {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Registration" component={RegistrationScreen} />
+            <Stack.Screen name="RegistrationEmail" component={RegistrationEmailSentScreen} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+            <Stack.Screen name="ResetEmailSent" component={ResetEmailSentScreen} />
+            <Stack.Screen name="ResetLinkExpired" component={ResetLinkExpiredScreen} />
+            <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+        </Stack.Navigator>
+    );
+}
+
+function AppStack() {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="MyTrends" component={MyTrendsScreen} />
+            <Stack.Screen name="TopTrends" component={TopTrendsScreen} />
+            <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} />
+            <Stack.Screen name="CompanyDetails" component={CompanyDetailsScreen} />
+            <Stack.Screen name="CauseDetails" component={CauseDetailsScreen} />
+            <Stack.Screen name="Search" component={SearchScreen} />
+        </Stack.Navigator>
+    );
+}
+
+function RootNavigator() {
+    const { bootstrapIfSignedIn } = useAuthHelpers();
+    const { user, loading } = useUser();
+
+    useEffect(() => { bootstrapIfSignedIn(); }, []);
+
+    if (loading) {
+        return null; // or a Splash component
+    }
+
+    return user ? <AppStack /> : <AuthStack />;
+}
 
 export default function App() {
-  const [user,setUser] = useState<User>(newUser);
-  return (
-      <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="Login" component={LoginScreen} initialParams={{ user }}/>
-              <Stack.Screen name="Registration" component={RegistrationScreen} initialParams={{ user }}/>
-              <Stack.Screen name="RegistrationEmail" component={RegistrationEmailSentScreen} initialParams={{ user }}/>
-              <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} initialParams={{ user }}/>
-              <Stack.Screen name="ResetEmailSent" component={ResetEmailSentScreen} initialParams={{ user }}/>
-              <Stack.Screen name="ResetLinkExpired" component={ResetLinkExpiredScreen} initialParams={{ user }}/>
-              <Stack.Screen name="PasswordReset" component={PasswordResetScreen} initialParams={{ user }}/>
-              <Stack.Screen name="PasswordResetSuccess" component={PasswordResetSuccessScreen} initialParams={{ user }}/>
-              <Stack.Screen name="Home" component={HomeScreen} initialParams={{ user }} />
-              <Stack.Screen name="MyTrends" component={MyTrendsScreen} initialParams={{ user }} />
-              <Stack.Screen name="TopTrends" component={TopTrendsScreen} initialParams={{ user }} />
-              <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} initialParams={{ user }}/>
-              <Stack.Screen name="CompanyDetails" component={CompanyDetailsScreen} initialParams={{ user }}/>
-              <Stack.Screen name="CauseDetails" component={CauseDetailsScreen} initialParams={{ user }}/>
-              <Stack.Screen name="Search" component={SearchScreen} initialParams={{ user }}/>
-          </Stack.Navigator>
-      </NavigationContainer>
-  );
+    /*useEffect(() => {
+        (async () => {
+            try {
+                await fetchAuthSession();
+                console.log('[session check] OK (plugin configured)');
+            } catch (e: any) {
+                console.log('[session check] ERROR', e?.name, e?.message);
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            const r = await fetch('https://httpbin.org/post', { method: 'POST', body: '{}' });
+            console.log('[test fetch] status', r.status);
+        })();
+    }, []);*/
+
+    return (
+        <UserProvider>
+            <NavigationContainer>
+                <RootNavigator />
+            </NavigationContainer>
+        </UserProvider>
+    );
 }
+

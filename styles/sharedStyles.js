@@ -1,6 +1,6 @@
-import {topInset,bottomInset,sw,sh} from "../components/helpers/screenDimensionsutilitiy"
+import {topInset,bottomInset,sw,sh} from "../src/components/screenDimensionsutilitiy"
 import { StyleSheet } from 'react-native'
-import {APP_BACKGROUND, BODY_TEXT_DARK, BRIGHT_BLUE, FORM_FIELD_BORDER, WHITE} from "./constants";
+import {APP_BACKGROUND, BODY_TEXT_DARK, BRIGHT_BLUE, DELETE_RED, FORM_FIELD_BORDER, WHITE} from "./constants";
 
 export const sharedStyles = StyleSheet.create({
     containerSettings: {
@@ -16,6 +16,13 @@ export const sharedStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
+    },
+    errorText: {
+        color: DELETE_RED,
+        fontSize: sh * 0.0153,
+        textAlign: 'center',
+        marginBottom: sh * 0.0100,
+        fontStyle: 'italic',
     },
     slogan: {
         fontSize: sh * 0.0174,
@@ -162,11 +169,72 @@ export const sharedStyles = StyleSheet.create({
     },
     centeredText: {
         fontSize: sh * 0.015,
-        marginTop: sh * 0.024,
+        //marginTop: sh * 0.024,
         textAlign: 'center',
         textAlignVertical: 'center',
         fontFamily: 'Inter',
         fontWeight: '700',
         color: BODY_TEXT_DARK
+    },
+    descriptionContainer: {
+        width: sw * 0.898,
+        //height: sh * 0.110,
+        marginTop: sh * 0.016,
+        marginLeft: sw * 0.051,
+        backgroundColor: APP_BACKGROUND,
+        borderColor: FORM_FIELD_BORDER,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: sw * 0.03,
+
+    },
+    description: {
+        margin: sw * 0.01
+    },
+    boycottContainer: {
+        width: sw * 0.898,
+        //height: sh * 0.48,
+        marginTop: sh * 0.016,
+        marginLeft: sw * 0.051,
+        paddingBottom: sh * 0.016,
+        backgroundColor: APP_BACKGROUND,
+        borderColor: FORM_FIELD_BORDER,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: sw * 0.03,
+    },
+    changeBoycottContainer: {
+        width: sw * 0.898,
+        //height: sh * 0.48,
+        marginTop: sh * 0.016,
+        paddingTop: sh * 0.016,
+        marginLeft: sw * 0.051,
+        paddingBottom: sw * 0.05,
+        backgroundColor: APP_BACKGROUND,
+        borderColor: FORM_FIELD_BORDER,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: sw * 0.03,
+    }, checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-start'
+    },
+    saveBtnContainer: {
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    addBtnContainer: {
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    addBtn: {
+        alignItems: 'center'
+    },
+    saveBtn: {
+        marginLeft: sw * 0.00
+    },
+    cancelBtn: {
+        //marginLeft: sw * 0.18,
+        //marginRight: sw * 0.1
     }
 })

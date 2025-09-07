@@ -15,7 +15,7 @@
     "styles/**/*",
     "assets/**/*",
     "node_modules",
-    "types/**/*",
+    "src/**/*",
     "App"
   ]
 }
