@@ -13,6 +13,7 @@ type Props = {
     hideLabel?: boolean
     width?: number
     paddingHorizontal?: number
+    isNumber?: boolean
 }
 
 export default function FormTextField({
@@ -23,7 +24,8 @@ export default function FormTextField({
                                           placeholder,
                                           hideLabel = false,
                                           width = 1.00,
-                                          paddingHorizontal = 0.102
+                                          paddingHorizontal = 0.102,
+                                          isNumber = false,
                                       }: Props) {
     return (
             <View style={[sharedStyles.formLabelAndFieldContainer,
@@ -36,15 +38,31 @@ export default function FormTextField({
                         {labelText}
                     </Text>
                 }
-                <TextInput
-                    style={sharedStyles.field}
-                    value={value}
-                    onChangeText={onChangeText}
-                    placeholder={placeholder}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    placeholderTextColor = {PLACE_HOLDER}
-                />
+                {
+                    isNumber &&
+                    <TextInput
+                        style={sharedStyles.field}
+                        value={value}
+                        onChangeText={onChangeText}
+                        placeholder={placeholder}
+                        autoCapitalize="none"
+                        keyboardType="number-pad"
+                        autoCorrect={false}
+                        placeholderTextColor = {PLACE_HOLDER}
+                    />
+                }
+                {
+                    !isNumber &&
+                    <TextInput
+                        style={sharedStyles.field}
+                        value={value}
+                        onChangeText={onChangeText}
+                        placeholder={placeholder}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        placeholderTextColor = {PLACE_HOLDER}
+                    />
+                }
         </View>
     );
 }

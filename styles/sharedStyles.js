@@ -8,6 +8,15 @@ export const sharedStyles = StyleSheet.create({
         width: sw,
         backgroundColor: APP_BACKGROUND,
     },
+    numericalInput: {
+        height: 50,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        marginHorizontal: 24,
+        marginTop: 20,
+    },
     sloganContent: {
         marginTop: sh * 0.008,
         width: '60%', // or sw * 0.60
@@ -23,6 +32,7 @@ export const sharedStyles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: sh * 0.0100,
         fontStyle: 'italic',
+        marginHorizontal: 24
     },
     slogan: {
         fontSize: sh * 0.0174,

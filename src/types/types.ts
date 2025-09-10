@@ -3,9 +3,9 @@
 export type RootStackParamList = {
     Login
     Registration
-    RegistrationEmail: { username: string, email: string };
+    RegistrationEmail: { username: string, email: string, msg: string };
     ForgotPassword
-    ResetEmailSent
+    ResetEmailSent: { email: string };
     ResetLinkExpired
     PasswordReset: { back_navigation : string };
     PasswordResetSuccess: { prompt: string, back_navigation : string };

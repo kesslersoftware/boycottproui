@@ -57,7 +57,7 @@ export const RLE_RESEND_BTN_WIDTH = 0.4610
 export const RLE_RESEND_BTN_HEIGHT = 0.0403
 export const RLE_RESEND_BTN_TOP_MARGIN = 0.0140
 // PasswordResetScreen
-export const PR_PASSWORD_TOP_MARGIN = sh * 0.0580
+export const PR_PASSWORD_TOP_MARGIN = sh * 0.0500
 export const PR_REDO_PASSWORD_TOP_MARGIN = sh * 0.0040
 export const PR_RESET_BTN_WIDTH = 0.4610
 export const PR_RESET_BTN_HEIGHT = 0.0403

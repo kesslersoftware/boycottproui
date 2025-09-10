@@ -35,7 +35,7 @@ based on the command used. Each environment contains:
 ### Navigation Structure
 - **Dual Stack Architecture**: Separate navigation stacks for authenticated and unauthenticated 
 - users
-- **AuthStack**: Login, registration, password reset flows
+- **AuthStack**: Login, registration, newPassword reset flows
 - **AppStack**: Main application screens (Home, Trends, Company/Cause details, etc.)
 - **Conditional Rendering**: RootNavigator switches stacks based on authentication state
 

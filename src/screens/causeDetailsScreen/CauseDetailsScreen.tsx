@@ -29,7 +29,6 @@ import { postAnonymousStat } from "../../services/AnonymousStatsService";
 import { BoycottData } from "../../services/LocalBoycottStore";
 import {CompanySummary} from "../../types/companies/CompanySummary";
 import { LocalUserCause } from "../../types/users/LocalUserCause";
-import ErrorSection from "../../components/errorSection/ErrorSection";
 type CauseDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CauseDetails'>
 type CauseDetailsScreenRouteProp = RouteProp<RootStackParamList, 'CauseDetails'>
 

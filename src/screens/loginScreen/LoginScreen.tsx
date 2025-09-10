@@ -1,8 +1,7 @@
-import {View, Text, Alert} from 'react-native'
+import {View, Text} from 'react-native'
 import {styles} from "./LoginScreenStyles";
 import HeaderBar from "../../components/headerBar/HeaderBar";
 import React, { useState } from 'react'
-import LoginPageErrorSection from "../../components/errorSection/LoginPageErrorSection";
 import {sharedStyles} from "../../../styles/sharedStyles";
 import CenteredButton from "../../components/button/CenteredButton";
 import {
@@ -23,27 +22,12 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {SignInResult, useAuthHelpers, useUser} from '../../context/UserContext';
 import LottieView from 'lottie-react-native';
 import {
-    signOut,
     resendSignUpCode
 } from 'aws-amplify/auth';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 type LoginScreenRouteProp = RouteProp<RootStackParamList, 'Login'>
 
-const handleErrorLink = (target: string) => {
-    if (target === 'resendEmail') {
-        console.log('Resending email…')
-        // trigger resend logic here
-    }
-}
-async function devSignOut() {
-    try {
-        await signOut({ global: true }); // also invalidates on Cognito
-        console.log('[devSignOut] done');
-    } catch (e) {
-        console.log('[devSignOut] error', e);
-    }
-}
 export default function LoginScreen() {
     // navigation constants
     const navigation = useNavigation<LoginScreenNavigationProp>();
@@ -51,15 +35,14 @@ export default function LoginScreen() {
     const [loading, setLoading] = useState(false);
     const sleep = (ms: number) =>
         new Promise(resolve => setTimeout(resolve, ms));
-    const [visibleErrors, setVisibleErrors] = useState<number[]>([]) // 2,3,4,5,0
+    const [visibleError, setVisibleError] = useState<string>('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { signInAndLoadUser } = useAuthHelpers();
     const handleLogin = async () => {
         try {
             setLoading(true); // show spinner
-            setVisibleErrors([]);
-            //await devSignOut();
+            setVisibleError('');
             const res: SignInResult = await signInAndLoadUser(email.trim(), password); // then navigate to app
             console.log(res.status);
             if (res.status === 'DONE') {
@@ -67,24 +50,25 @@ export default function LoginScreen() {
                 return;
             } else if (res.status === 'NEEDS_CONFIRM') {
                 // User not confirmed yet → send them to confirmation screen
-                navigation.navigate('RegistrationEmail', { username: email.trim(), email: email.trim() });
+                navigation.navigate('RegistrationEmail', { username: email.trim(), email: email.trim(),
+                msg: 'you need to finish registering before logging in, please enter the code sent to your email below:'});
                 return;
             } else {
-                setVisibleErrors([5]);
+                setVisibleError('Incorrect email or password. Please try again.');
             }
         } catch (err: any) {
             // Map common errors to friendly messages
             switch (err?.name) {
                 case 'UserNotFoundException':
                 case 'NotAuthorizedException':
-                    setVisibleErrors([1]);
+                    setVisibleError('Incorrect username or password.');
                     break;
                 case 'UserNotConfirmedException':
-                    setVisibleErrors([2]);
                     console.log('🔁 ResendSignUpCode request:', { username: email });
                     const result = await resendSignUpCode({ username: email });
                     console.log('✅ ResendSignUpCode success:', result);
-                    navigation.navigate('RegistrationEmail', { username: email, email: email });
+                    navigation.navigate('RegistrationEmail', { username: email, email: email,
+                    msg: 'you need to finish registering before logging in, please enter the code sent to your email below:'});
                     break;
                 case 'PasswordResetRequiredException':
                     // prompt to reset password
@@ -121,10 +105,14 @@ export default function LoginScreen() {
                 <Text style={styles.toText}>to</Text>
                 <Text style={styles.boycottText}>BoycottPro!</Text>
                 <Text style={styles.slogan}>“Vote with your wallet. Track with your phone.”</Text>
-                <LoginPageErrorSection
-                    errorIndexes={visibleErrors}
-                    onLinkPress={handleErrorLink}
-                />
+                {
+                    visibleError.length > 0 &&
+                    <>
+                        <Text style={sharedStyles.errorText}>
+                            {visibleError}
+                        </Text>
+                    </>
+                }
                 <Text style={styles.signInTxt}>please sign in:</Text>
                 <FormTextField
                     labelText="email"

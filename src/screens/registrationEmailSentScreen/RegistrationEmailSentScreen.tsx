@@ -8,13 +8,13 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {RootStackParamList} from "../../types/types";
 import { confirmSignUp, resendSignUpCode } from 'aws-amplify/auth';
-import ErrorSection from "../../components/errorSection/ErrorSection";
 import {
-    BRIGHT_BLUE,
+    FP_EMAIL_TOP_MARGIN,
     RG_REGISTER_BTN_HEIGHT,
     RG_REGISTER_BTN_TOP_MARGIN,
     RG_REGISTER_BTN_WIDTH
 } from "../../../styles/constants";
+import FormTextField from "../../components/labelAndField/FormTextField";
 type RegistrationEmailSentScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RegistrationEmail'>
 type RegistrationEmailSentScreenRouteProp = RouteProp<RootStackParamList, 'RegistrationEmail'>
 
@@ -26,6 +26,7 @@ export default function RegistrationEmailSentScreen() {
 
     const username = route.params?.username ?? '';
     const email = route.params?.email ?? '';
+    const message = route.params?.msg ?? '';
     const [confirmationCode, setConfirmationCode] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function RegistrationEmailSentScreen() {
     const [resendMessage, setResendMessage] = useState<string | null>(null);
 
     // Error indices for ErrorSection (index 12 = “User is already confirmed”)
-    const [visibleErrors, setVisibleErrors] = useState<number[]>([]);
+    const [visibleError, setVisibleError] = useState<string>('');
 
     // Tick down the cooldown
     useEffect(() => {
@@ -44,10 +45,14 @@ export default function RegistrationEmailSentScreen() {
         const t = setInterval(() => setCooldown((s) => s - 1), 1000);
         return () => clearInterval(t);
     }, [cooldown]);
-
+    useEffect(() => {
+        if(message.length>0) {
+            setVisibleError(message);
+        }
+    }, []);
     const handleConfirm = async () => {
         setLoading(true);
-        setVisibleErrors([]);
+        setVisibleError('');
         try {
             console.log('🚀 ConfirmSignUp request:', {
                 username: username,
@@ -65,11 +70,11 @@ export default function RegistrationEmailSentScreen() {
             const msg: string = err?.message ?? '';
             // Specifically catch already-confirmed user
             if (/already confirmed/i.test(msg)) {
-                setVisibleErrors([12]); // Your index for "User is already confirmed"
+                setVisibleError('User is already confirmed'); // Your index for "User is already confirmed"
             } else {
                 // Generic error bucket (pick whatever index fits your ErrorSection)
                 // If you want to show the raw message, you can keep local text instead.
-                setVisibleErrors([5]); // “Incorrect email or password. Please try again.” (generic)
+                setVisibleError('Something went wrong. Please try again.'); // “Incorrect email or password. Please try again.” (generic)
             }
         } finally {
             setLoading(false);
@@ -80,7 +85,7 @@ export default function RegistrationEmailSentScreen() {
         if (cooldown > 0 || resending) return;
         setResending(true);
         setResendMessage(null);
-        setVisibleErrors([]); // clear old errors
+        setVisibleError(''); // clear old errors
         try {
             console.log('🔁 ResendSignUpCode request:', { username: username });
             const result = await resendSignUpCode({ username: username });
@@ -95,7 +100,7 @@ export default function RegistrationEmailSentScreen() {
             });
             const msg: string = err?.message ?? '';
             if (/already confirmed/i.test(msg)) {
-                setVisibleErrors([12]);
+                setVisibleError('User is already confirmed');
             } else {
                 setResendMessage('Failed to resend confirmation code.');
             }
@@ -107,25 +112,30 @@ export default function RegistrationEmailSentScreen() {
     return (
         <View style={sharedStyles.containerSettings}>
             <HeaderBar />
-
-            {!isSuccess ? (
+            {
+                !isSuccess ? (
                 <>
                     <Text style={styles.verifyEmail}>Verify your email</Text>
                     <Text style={styles.verificationLink}>
                         We’ve sent a verification code to {email || 'your email'}.
                     </Text>
                     <Text style={styles.checkInbox}>Enter it below to complete registration.</Text>
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Confirmation code"
+                    {
+                        visibleError.length > 0 &&
+                        <>
+                            <Text style={sharedStyles.errorText}>
+                                {visibleError}
+                            </Text>
+                        </>
+                    }
+                    <FormTextField
+                        labelText="Confirmation code"
+                        labelMarginTop={FP_EMAIL_TOP_MARGIN}
                         value={confirmationCode}
                         onChangeText={setConfirmationCode}
-                        keyboardType="number-pad"
-                        autoCapitalize="none"
-                        autoCorrect={false}
+                        placeholder=""
+                        isNumber={true}
                     />
-                    <ErrorSection errorIndexes={visibleErrors} onLinkPress={() => {}} />
                     <CenteredButton
                         text={loading ? 'Confirming...' : 'Confirm'}
                         widthPercent={RG_REGISTER_BTN_WIDTH}

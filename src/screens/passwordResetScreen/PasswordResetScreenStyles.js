@@ -5,6 +5,7 @@ import {BODY_TEXT_DARK, BRIGHT_BLUE, FORM_FIELD_BORDER, WHITE} from "../../../st
 export const styles = StyleSheet.create({
     passwordRestContent: {
         marginTop: sh * 0.050,
+        marginBottom: sh * 0.050,
         width: '100%',
         flexDirection: 'column',
         justifyContent: 'center',

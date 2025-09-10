@@ -1,0 +1,22 @@
+BIG ideas:
+
+
+
+
+
+
+medium improvements:
+1. make an easier flow for picking reasons for boycotting a company
+page 1: pick a reason, with buttons to "add the reason(done)" or "add and a
+add another", "give a personal reason"
+page 2: page for personal reason, with buttons to "add the reason(done)"
+2. instead of update reason, have add more reasons and remove reasons. then for
+the add reasons page, just use the form from #1. for the remove reasons, use
+
+
+
+
+small improvements:
+1. if I have already uploaded all companies and causes to the app, then I should not need to make API
+calls to get the top companies and causes; I should derive this data from the two lists.
+This means that I should globalize the companies and causes data.

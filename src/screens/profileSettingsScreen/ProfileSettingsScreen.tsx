@@ -1,4 +1,4 @@
-import {View, Text, Alert} from "react-native";
+import {View, Text} from "react-native";
 import {styles} from "./ProfileSettingsScreenStyles";
 import {sharedStyles} from "../../../styles/sharedStyles";
 import {sw} from "../../components/screenDimensionsutilitiy"
@@ -34,6 +34,7 @@ export default function ProfileSettingsScreen() {
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
     const [newUserName, setNewUserName] = useState('');
+    const usernamesTheSame = username === newUserName || newUserName.length === 0;
     const [email, setEmail] = useState('');
     const [visibleError, setVisibleError] = useState<string>('');
     const [statusMessage, setStatusMessage] = useState('');
@@ -77,7 +78,10 @@ export default function ProfileSettingsScreen() {
         fetchUserSettings();
         console.log("fetching user settings");
     }, []);
-    const alterUsername = async () => {
+    const gotoPasswordReset = () => {
+        navigation.navigate('PasswordReset', { back_navigation: 'ProfileSettings'});
+    }
+    const changeTheUsername = async () => {
         try {
             setVisibleError('');
             console.log("changing username");
@@ -89,8 +93,8 @@ export default function ProfileSettingsScreen() {
             );
             console.log("username changed");
             setUsername(newUserName);
-            setNewUserName('');
-            setStatusMessageAndColor(successColor, result.message);
+            setNewUserName(newUserName);
+            setStatusMessageAndColor( "Successfully changed username",successColor);
         } catch (e: any) {
             // api.ts throws parsed JSON or {status, message}
             const status = e?.status ?? e?.statusCode;
@@ -135,17 +139,16 @@ export default function ProfileSettingsScreen() {
                     <Text style={styles.emailLabel}>email:</Text>
                     <Text style={styles.emailTxt}>{email}</Text>
                 </View>
-                <CenteredButton
+                {/*<CenteredButton
                     text="change email"
                     widthPercent={PROFILE_RETURN_BTN_WIDTH}
                     heightPercent={PROFILE_RETURN_BTN_HEIGHT}
                     marginTopPercent={PROFILE_RETURN_BTN_TOP_MARGIN}
                     onPress={() => console.log('update username pressed')}
-                />
+                />*/}
                 <View style={styles.textRow}>
                     <Text style={styles.passwordLabel}>password:</Text>
-                    <Text style={styles.passwordLink} onPress={() =>
-                        navigation.navigate('PasswordReset')}>
+                    <Text style={styles.passwordLink} onPress={gotoPasswordReset}>
                         change password
                     </Text>
                 </View>
@@ -161,7 +164,8 @@ export default function ProfileSettingsScreen() {
                     widthPercent={PROFILE_RETURN_BTN_WIDTH}
                     heightPercent={PROFILE_RETURN_BTN_HEIGHT}
                     marginTopPercent={PROFILE_RETURN_BTN_TOP_MARGIN}
-                    onPress={alterUsername}
+                    onPress={changeTheUsername}
+                    disabled={usernamesTheSame}
                 />
                 {statusMessage !== '' && (
                     <View style={{ position: 'absolute', bottom: 20, alignSelf: 'center', backgroundColor: '#D4EDDA', padding: 10, borderRadius: 8 }}>

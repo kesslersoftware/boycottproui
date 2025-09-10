@@ -15,7 +15,6 @@ import {LocalBoycottStore} from "../../services/LocalBoycottStore";
 import {ResponseMessage} from "../../types/misc";
 import {UpgradeUserForm} from "../../types/users/UpgradeUserForm";
 import {signOut} from "aws-amplify/auth";
-import ErrorSection from "../../components/errorSection/ErrorSection";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Search'>
@@ -55,14 +54,14 @@ export default function HomeScreen() {
             setLoading(true);
             if (user!.paying_user) {
                 try {
-
                     const stats = await getUserStats();
+                    console.log("stats are: " + stats);
                     setCompanies(stats.totalBoycotts || 0);
                     setCauses(stats.numCausesFollowed || 0);
-                    setTopCompany(stats.worstCompanyName || '');
+                    setTopCompany(stats.worstCompanyName || 'None at the moment');
                     setNumPeople(stats.worstCount || 0);
-                    setTopReason(stats.topReason || '');
-                    setTopCause(stats.causeName || '');
+                    setTopReason(stats.topReason || 'not applicable');
+                    setTopCause(stats.causeName || 'None at the moment');
                 } catch (e: any) {
                     // api.ts throws parsed JSON or {status, message}
                     const status = e?.status ?? e?.statusCode;
@@ -146,7 +145,10 @@ export default function HomeScreen() {
         setUser(undefined);
         //navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
     }
-
+    const navigateTo = (name: string) => {
+        const nameWithQuotes: string = "'" + name + "'";
+        navigation.navigate("'" + name + "'");
+    }
     return(
         <View style={sharedStyles.containerSettings}>
             <HeaderBar/>

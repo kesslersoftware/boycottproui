@@ -3,7 +3,6 @@ import {styles} from "./RegistrationScreenStyles";
 import HeaderBar from "../../components/headerBar/HeaderBar";
 import CustomCheckbox from "../../components/customCheckbox/CustomCheckbox"
 import React, { useState } from 'react'
-import ErrorSection from "../../components/errorSection/ErrorSection";
 import {sharedStyles} from "../../../styles/sharedStyles";
 import {
     RG_EMAIL_TOP_MARGIN,
@@ -34,7 +33,8 @@ export default function RegistrationScreen() {
     const navigation = useNavigation<RegistrationScreenNavigationProp>();
     const route = useRoute<RegistrationScreenRouteProp>();
     const { user } = useUser();
-    const [visibleErrors, setVisibleErrors] = useState<number[]>([]); // 7,8,9
+    const message = route.params?.msg ?? '';
+    const [visibleError, setVisibleError] = useState<string>('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [redoEmail, setRedoEmail] = useState('');
@@ -48,38 +48,17 @@ export default function RegistrationScreen() {
     const doEmailsMatch = email && redoEmail && email === redoEmail;
     const doPasswordsMatch = password && redoPassword && password === redoPassword;
 
-    const isValidPassword = (pwd: string) =>
-
-        pwd.length >= 8;
+    const isValidPassword = (pwd: string) => pwd.length >= 8;
 
     const isFormValid =
         isValidEmailFormat(email) &&
         doEmailsMatch &&
-        password.length >= 8 &&
+        password.length>0 && redoPassword.length>0 &&
         doPasswordsMatch &&
         isValidPassword(password) &&
         checked;
 
     const register = async () => {
-        const errors: number[] = [];
-
-        if (!email || !redoEmail) errors.push(6); // empty field
-        else if (!isValidEmailFormat(email)) errors.push(10); // bad format
-        else if (!doEmailsMatch) errors.push(6); // mismatched emails
-
-        if (!password || !redoPassword) errors.push(6);
-        else {
-            if (!isValidPassword(password)) errors.push(8);
-            if (!doPasswordsMatch) errors.push(9);
-        }
-
-        if (!checked) errors.push(6);
-
-        if (errors.length > 0) {
-            setVisibleErrors(errors);
-            return;
-        }
-        let usernameForCognito = '';
         try {
             setLoading(true);
             const emailNorm = email.trim();
@@ -100,7 +79,7 @@ export default function RegistrationScreen() {
                 options: { userAttributes }, // includes email, and optional preferred_username
             });
             console.log('✅ SignUp success:', result);
-            navigation.navigate('RegistrationEmail', { username: emailNorm, email: emailNorm });
+            navigation.navigate('RegistrationEmail', { username: emailNorm, email: emailNorm, msg : '' });
         } catch (err: any) {
             const name = err?.name ?? '';
             const msg  = err?.message ?? '';
@@ -110,21 +89,24 @@ export default function RegistrationScreen() {
                     const emailNorm = email.trim();
                     // If user is UNCONFIRMED, this succeeds and we go straight to the code screen
                     await resendSignUpCode({ username: emailNorm });
-                    navigation.navigate('RegistrationEmail', { username: emailNorm, email: emailNorm });
+                    navigation.navigate('RegistrationEmail', { username: emailNorm, email: emailNorm,
+                    msg: ''});
                     return;
                 } catch (resendErr: any) {
                     const rmsg = resendErr?.message ?? '';
+                    console.log("user is already confirmed");
                     // Confirmed users typically trigger: InvalidParameterException: User is already confirmed
                     if (/already confirmed/i.test(rmsg)) {
-                        setVisibleErrors([13]); // show the confirmed-account message
+                        setVisibleError('An account with this email already exists and is confirmed. If you' +
+                            'are unsure of the password, return to login and click \'forgot password\''); // show the confirmed-account message
                         return;
                     }
                     // Any other resend failure -> generic
-                    setVisibleErrors([5]);
+                    setVisibleError('Incorrect email or password. Please try again.');
                     return;
                 }
             }
-            setVisibleErrors([5]); // Generic AWS signup error
+            setVisibleError('Something went wrong. Please try again.'); // Generic AWS signup error
         } finally {
             setLoading(false);
         }
@@ -138,10 +120,14 @@ export default function RegistrationScreen() {
             { !loading &&
                 <>
                   <Text style={styles.createAccount}>Create your account</Text>
-                  <ErrorSection
-                        errorIndexes={visibleErrors}
-                        onLinkPress={() => {}}
-                  />
+                    {
+                        visibleError.length > 0 &&
+                        <>
+                            <Text style={sharedStyles.errorText}>
+                                {visibleError}
+                            </Text>
+                        </>
+                    }
                   <FormTextField
                       labelText="username(optional)"
                       labelMarginTop={RG_USERNAME_TOP_MARGIN}

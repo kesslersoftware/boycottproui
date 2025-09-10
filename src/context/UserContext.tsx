@@ -96,44 +96,42 @@ export const useAuthHelpers = () => {
         password: string
     ): Promise<SignInResult> => {
         try {
-            //console.log("attempting to sign in, ",email," ",password);
-            //console.log('[doSignIn] typeof signIn', typeof signIn); // should be 'function'
             const res = await signIn({ username: email.trim(), password });
-            //console.log("res = ",res);
-            const step = res.nextStep?.signInStep;
-            //console.log("step = ",step);
+            const step = res?.nextStep?.signInStep;
+
+            // (Defensive) If Amplify ever returns a step asking for confirmation:
             if (step === 'CONFIRM_SIGN_UP') {
-                // don’t navigate here—just signal the screen
-                try {
-                    await resendSignUpCode({ username: email.trim() });
-                } catch {}
+                try { await resendSignUpCode({ username: email.trim() }); } catch {}
                 return { status: 'NEEDS_CONFIRM' };
             }
 
             if (!step || step === 'DONE') {
-                //console.log("calling getAuth");
                 const { idToken } = await getAuth();
-                //console.log("token returned = ",idToken);
-                // PREFERRED: once you have /users/me implemented, use it:
                 const user = await getUserProfileFromApiUsingJwt(idToken!);
-                //console.log("user returned = ",user);
-                // TEMP BACK-COMPAT: use your current login API so the rest of your app works now.
-                // (This still keeps Cognito as the identity provider; you can swap this out later.)
-                //const user = await loginUser({ username_or_email: email, password });
-
                 await setUser(user);
-                //console.log("user set");
                 return { status: 'DONE' };
             }
 
             return { status: 'ERROR', error: new Error(`Unhandled step: ${step}`) };
+
         } catch (error: any) {
+            // === Key fix: handle unconfirmed user here (thrown by signIn) ===
+            if (error?.name === 'UserNotConfirmedException') {
+                try { await resendSignUpCode({ username: email.trim() }); } catch {}
+                return { status: 'NEEDS_CONFIRM' };
+            }
+
+            // (Optional) handle a few other common auth errors cleanly
+            // if (error?.name === 'NotAuthorizedException') { ...wrong password... }
+            // if (error?.name === 'UserNotFoundException') { ...no such user... }
+
             console.log('[SignIn] ERROR name:', error?.name);
             console.log('[SignIn] ERROR message:', error?.message);
             console.log('[SignIn] ERROR suggestion:', error?.recoverySuggestion);
             console.log('[SignIn] ERROR code:', error?.code);
             console.log('[SignIn] ERROR cause:', error?.cause?.message || error?.cause);
             console.log('[SignIn] ERROR meta:', error?.$metadata);
+
             return { status: 'ERROR', error };
         }
     };

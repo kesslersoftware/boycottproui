@@ -1,6 +1,4 @@
 // src/amplify.ts
-import { Hub } from 'aws-amplify/utils';
-console.log('[Amplify.Init] file loaded');
 import { Amplify } from 'aws-amplify';
 import {
     API_URL,
@@ -20,7 +18,7 @@ console.log('[Amplify.Init] env', {
     COGNITO_AUTH_FLOW
 });
 
-console.log('[Amplify.Init] configuring…');
+//console.log('[Amplify.Init] configuring…');
 
 Amplify.configure({
     Auth: {

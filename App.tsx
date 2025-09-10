@@ -27,7 +27,6 @@ import RegistrationScreen from "./src/screens/registrationScreen/RegistrationScr
 import RegistrationEmailSentScreen from "./src/screens/registrationEmailSentScreen/RegistrationEmailSentScreen";
 import ForgotPasswordScreen from "./src/screens/forgotPasswordScreen/forgotPasswordScreen";
 import ResetEmailSentScreen from "./src/screens/resetEmailSentScreen/ResetEmailSentScreen";
-import ResetLinkExpiredScreen from "./src/screens/resetLinkExpiredScreen/ResetLinkExpiredScreen";
 import PasswordResetScreen from "./src/screens/passwordResetScreen/PasswordResetScreen";
 import HomeScreen from "./src/screens/homeScreen/HomeScreen";
 import MyTrendsScreen from "./src/screens/myTrendsScreen/MyTrendsScreen";
@@ -48,8 +47,6 @@ function AuthStack() {
             <Stack.Screen name="RegistrationEmail" component={RegistrationEmailSentScreen} />
             <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
             <Stack.Screen name="ResetEmailSent" component={ResetEmailSentScreen} />
-            <Stack.Screen name="ResetLinkExpired" component={ResetLinkExpiredScreen} />
-            <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
         </Stack.Navigator>
     );
 }
@@ -61,6 +58,7 @@ function AppStack() {
             <Stack.Screen name="MyTrends" component={MyTrendsScreen} />
             <Stack.Screen name="TopTrends" component={TopTrendsScreen} />
             <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} />
+            <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
             <Stack.Screen name="CompanyDetails" component={CompanyDetailsScreen} />
             <Stack.Screen name="CauseDetails" component={CauseDetailsScreen} />
             <Stack.Screen name="Search" component={SearchScreen} />
