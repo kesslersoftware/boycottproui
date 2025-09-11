@@ -17,8 +17,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {RootStackParamList} from "../../types/types";
 import { useUser } from '../../context/UserContext';
-import { getAllCompanies } from '../../api/companies';
-import { getAllCauses } from '../../api/causes';
 import {ResponseMessage} from "../../types/misc";
 import {addUserCause} from "../../api/users";
 import ReasonsForm from "../../components/reasonsForm/ReasonsForm";
@@ -203,8 +201,8 @@ export default function SearchScreen() {
     const fetchAllCompaniesAndCauses = async () => {
         try {
             setLoading(true);
-            const allCompanies = await getAllCompanies();
-            const allCauses = await getAllCauses();
+            const allCompanies = await LocalBoycottStore.getAllCompanies();
+            const allCauses = await LocalBoycottStore.getAllCauses();
             const convertedCompanies: ListItem[] = allCompanies.map(company => {
                     return {
                         id: company.company_id,

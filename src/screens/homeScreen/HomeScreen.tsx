@@ -44,6 +44,9 @@ export default function HomeScreen() {
         setStatusMessage('');
     }
     useEffect(() => {
+        LocalBoycottStore.checkAndRefreshIfNeeded();
+    }, []);
+    useEffect(() => {
         if (!user?.user_id) {
             // navigation.navigate('Login');
         }

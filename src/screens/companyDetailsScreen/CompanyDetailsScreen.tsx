@@ -21,7 +21,8 @@ import { useUser } from '../../context/UserContext';
 import {deleteUserBoycott, getUserBoycott} from "../../api/users";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import {CompanyMetadata} from "../../types/users";
-import {getCompanyById, getCompanyCauses} from "../../api/companies";
+import {getCompanyById, getCompanyCauses, getCompanyByName} from "../../api/companies";
+import { CompanyData, Controversy } from "../../types/companies/CompanyData";
 import {CompanyCause} from "../../types/companies/CompanyCause";
 import { Company } from "../../types/companies/Company";
 import { formatDateTime } from '../../helpers/DateUtil';
@@ -36,8 +37,23 @@ import { postAnonymousStat } from "../../services/AnonymousStatsService";
 import {CauseSummary} from "../../types/causes/CauseSummary";
 import { LocalUserBoycott } from "../../types/users/LocalUserBoycott";
 import { BoycottData } from "../../services/LocalBoycottStore";
+import AiDescription from "../../components/aiDescription/AiDescription";
 type CompanyDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CompanyDetails'>
 type CompanyDetailsScreenRouteProp = RouteProp<RootStackParamList, 'CompanyDetails'>
+
+interface ParsedCompanyData {
+    stock_ticker: string;
+    summary: string;
+    controversies_or_issues: Controversy[];
+}
+
+const parseData = (companyData: CompanyData): ParsedCompanyData => {
+    return {
+        stock_ticker: companyData.stock_ticker || '',
+        summary: companyData.summary || '',
+        controversies_or_issues: companyData.controversies_or_issues || []
+    };
+};
 
 export default function CompanyDetailsScreen() {
     // navigation constants
@@ -50,6 +66,7 @@ export default function CompanyDetailsScreen() {
     const [items,setItems] = useState<ListItem[]>([]);
     const [company, setCompany] =
         useState<Company | null>(null);
+    const [aiData, setAiData] = useState<ParsedCompanyData | null>(null);
     const [companyDetails, setCompanyDetails] = useState<CompanyMetadata | null>(null);
     const [ boycottReasons, setBoycottReasons] = useState<ListItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -83,12 +100,39 @@ export default function CompanyDetailsScreen() {
     }
     const fetchCompanyDetails = async () => {
         setLoading(true);
+        setVisibleError('');
         let step1passed = false;
+        let fetchedCompany: Company | null = null;
         try {
             console.log("company_id = ",company_id);
-            const company:Company = await getCompanyById(company_id);
-            console.log("company = ",company);
+            // Get company from LocalBoycottStore
+            const allCompanies = await LocalBoycottStore.getAllCompanies();
+            let company = allCompanies.find(c => c.company_id === company_id);
+            if (!company) {
+                throw new Error('Company not found in local storage');
+            }
+            // Check if description is blank and enhance it if needed
+            if (!company.description || company.description.trim() === '') {
+                try {
+                    console.log("getting description for company: ", company.company_name);
+                    const companyData = await getCompanyByName(company.company_name);
+                    const parsedData = parseData(companyData);
+                    
+                    // Update the company object with enhanced description (summary)
+                    company = {
+                        ...company,
+                        description: parsedData.summary
+                    };
+                    
+                    // Store the full AI data separately
+                    setAiData(parsedData);
+                } catch (enhanceError) {
+                    console.warn('Failed to enhance company description:', enhanceError);
+                    // Continue with the original company data
+                }
+            }
             setCompany(company);
+            fetchedCompany = company;
             step1passed = true;
         } catch (e: any) {
             const status = e?.status ?? e?.statusCode;
@@ -103,6 +147,7 @@ export default function CompanyDetailsScreen() {
         }
         let step2passed = false;
         if(step1passed) {
+            console.log("user is a paying user?: " + user!.paying_user!);
             if (user!.paying_user!) {
                 try {
                     const companyDetails: CompanyMetadata = await getUserBoycott(company_id);
@@ -137,7 +182,7 @@ export default function CompanyDetailsScreen() {
                         rec.company_id === company_id);
                     let companyDetails: CompanyMetadata = {
                         company_id: company_id,
-                        company_name: company!.company_name,
+                        company_name: fetchedCompany!.company_name,
                         boycottingSince: undefined,
                         reasons: [],
                         boycotting: false
@@ -288,7 +333,6 @@ export default function CompanyDetailsScreen() {
     };
     const initiateChangeMode = () => {
         setChangeMode(true);
-        console.log("CHANGE boycottReasons",boycottReasons);
         setCurrentReasons(boycottReasons);
         setClickedCurrentReasons(Array(boycottReasons.length).fill(false));
     };
@@ -358,11 +402,22 @@ export default function CompanyDetailsScreen() {
                         </View>
                     }
                     {
-                        !addMode &&
+                        !addMode && aiData &&
+                        <>
+                            <Text style={sharedStyles.centeredText}>Company Summary & History</Text>
+                            <AiDescription 
+                                stock_ticker={aiData.stock_ticker}
+                                summary={aiData.summary}
+                                controversies_or_issues={aiData.controversies_or_issues}
+                            />
+                        </>
+                    }
+                    {
+                        !addMode && !aiData && company?.description &&
                         <>
                             <Text style={sharedStyles.centeredText}>Company Summary & History</Text>
                             <View style={sharedStyles.descriptionContainer}>
-                                <Text style={sharedStyles.description}>{company?.description}</Text>
+                                <Text style={sharedStyles.description}>{company.description}</Text>
                             </View>
                         </>
                     }
