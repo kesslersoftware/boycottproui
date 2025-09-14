@@ -3,12 +3,16 @@ import { Company } from '../types/companies/Company';
 import {TopCompany} from "../types/companies/TopCompany";
 import {CompanyCause} from "../types/companies/CompanyCause";
 import {ResponseMessage} from "../types/misc";
+import { CompanyData } from '../types/companies/CompanyData';
 
 export const getTopCompanies =
     async (limit: number): Promise<TopCompany[]> =>
         apiGet(`/companies/top/${limit}`);
 export const getCompanyById =
     async (company_id: string): Promise<Company> =>
+        apiGet(`/companies/${company_id}`);
+export const getCompanyByName =
+    async (company_id: string): Promise<CompanyData> =>
         apiGet(`/companies/${company_id}`);
 export const getCompanyCauses =
     async (company_id: string): Promise<CompanyCause[]> =>
