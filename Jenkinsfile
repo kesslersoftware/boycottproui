@@ -144,6 +144,9 @@ EOF
                         sh '''
                             cd android
 
+                            # Make gradlew executable (fix permission denied error)
+                            chmod +x gradlew
+
                             # Clean previous builds
                             ./gradlew clean
 
