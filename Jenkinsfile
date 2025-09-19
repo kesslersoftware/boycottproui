@@ -34,6 +34,8 @@ pipeline {
     environment {
         APP_NAME = "boycottproui"
         NODE_ENV = "${params.BUILD_TYPE}"
+        ANDROID_HOME = "/opt/android-sdk"
+        ANDROID_SDK_ROOT = "/opt/android-sdk"
     }
 
     stages {
@@ -57,6 +59,48 @@ pipeline {
 
                     # Install React Native CLI if not present
                     npm install -g @react-native-community/cli || true
+                '''
+            }
+        }
+
+        stage('Setup Android SDK') {
+            when {
+                expression { params.BUILD_ANDROID }
+            }
+            steps {
+                sh '''
+                    # Create Android SDK directory if it doesn't exist
+                    sudo mkdir -p /opt/android-sdk
+
+                    # Download and install Android command line tools if not present
+                    if [ ! -d "/opt/android-sdk/cmdline-tools" ]; then
+                        echo "Installing Android SDK..."
+                        cd /tmp
+                        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+                        sudo unzip -q commandlinetools-linux-11076708_latest.zip -d /opt/android-sdk/
+                        sudo mv /opt/android-sdk/cmdline-tools /opt/android-sdk/cmdline-tools-temp
+                        sudo mkdir -p /opt/android-sdk/cmdline-tools/latest
+                        sudo mv /opt/android-sdk/cmdline-tools-temp/* /opt/android-sdk/cmdline-tools/latest/
+                        sudo rmdir /opt/android-sdk/cmdline-tools-temp
+                        rm commandlinetools-linux-11076708_latest.zip
+                    fi
+
+                    # Set permissions
+                    sudo chown -R jenkins:jenkins /opt/android-sdk
+                    sudo chmod -R 755 /opt/android-sdk
+
+                    # Accept licenses and install required SDK components
+                    export ANDROID_HOME=/opt/android-sdk
+                    export ANDROID_SDK_ROOT=/opt/android-sdk
+                    export PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools
+
+                    # Accept all licenses
+                    yes | /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+                    # Install required SDK components
+                    /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" || true
+
+                    echo "✅ Android SDK setup completed"
                 '''
             }
         }
@@ -143,6 +187,11 @@ EOF
                     steps {
                         sh '''
                             cd android
+
+                            # Set Android SDK environment variables
+                            export ANDROID_HOME=/opt/android-sdk
+                            export ANDROID_SDK_ROOT=/opt/android-sdk
+                            export PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools
 
                             # Make gradlew executable (fix permission denied error)
                             chmod +x gradlew
