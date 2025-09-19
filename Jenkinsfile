@@ -52,8 +52,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    # Clean install to ensure fresh dependencies
-                    npm ci
+                    # Clean install to ensure fresh dependencies (with legacy peer deps for React 19 compatibility)
+                    npm ci --legacy-peer-deps
 
                     # Install React Native CLI if not present
                     npm install -g @react-native-community/cli || true
