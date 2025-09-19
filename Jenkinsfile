@@ -80,7 +80,18 @@ pipeline {
                     if [ ! -d "${WORKSPACE}/android-sdk/cmdline-tools" ]; then
                         echo "Installing Android SDK..."
                         cd /tmp
-                        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+
+                        # Try curl first, then wget as fallback
+                        if command -v curl >/dev/null 2>&1; then
+                            curl -L -o commandlinetools-linux-11076708_latest.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+                        elif command -v wget >/dev/null 2>&1; then
+                            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+                        else
+                            echo "Neither curl nor wget available, trying to install curl..."
+                            apt-get update && apt-get install -y curl
+                            curl -L -o commandlinetools-linux-11076708_latest.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+                        fi
+
                         unzip -q commandlinetools-linux-11076708_latest.zip -d ${WORKSPACE}/android-sdk/
                         mv ${WORKSPACE}/android-sdk/cmdline-tools ${WORKSPACE}/android-sdk/cmdline-tools-temp
                         mkdir -p ${WORKSPACE}/android-sdk/cmdline-tools/latest
