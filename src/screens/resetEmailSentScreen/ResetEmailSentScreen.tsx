@@ -12,7 +12,7 @@ import CenteredButton from "../../components/button/CenteredButton";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {RootStackParamList} from "../../types/types";
-import { useUser } from "src/context/UserContext";
+import { useUser } from "../../context/UserContext";
 import {confirmResetPassword, resetPassword} from "aws-amplify/auth";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import FormTextField from "../../components/labelAndField/FormTextField";
