@@ -34,8 +34,8 @@ pipeline {
     environment {
         APP_NAME = "boycottproui"
         NODE_ENV = "${params.BUILD_TYPE}"
-        ANDROID_HOME = "/opt/android-sdk"
-        ANDROID_SDK_ROOT = "/opt/android-sdk"
+        ANDROID_HOME = "${WORKSPACE}/android-sdk"
+        ANDROID_SDK_ROOT = "${WORKSPACE}/android-sdk"
     }
 
     stages {
@@ -69,38 +69,39 @@ pipeline {
             }
             steps {
                 sh '''
-                    # Create Android SDK directory if it doesn't exist
-                    sudo mkdir -p /opt/android-sdk
+                    # Use workspace directory for Android SDK (no sudo required)
+                    export ANDROID_HOME="${WORKSPACE}/android-sdk"
+                    export ANDROID_SDK_ROOT="${WORKSPACE}/android-sdk"
+
+                    # Create Android SDK directory in workspace
+                    mkdir -p ${WORKSPACE}/android-sdk
 
                     # Download and install Android command line tools if not present
-                    if [ ! -d "/opt/android-sdk/cmdline-tools" ]; then
+                    if [ ! -d "${WORKSPACE}/android-sdk/cmdline-tools" ]; then
                         echo "Installing Android SDK..."
                         cd /tmp
                         wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-                        sudo unzip -q commandlinetools-linux-11076708_latest.zip -d /opt/android-sdk/
-                        sudo mv /opt/android-sdk/cmdline-tools /opt/android-sdk/cmdline-tools-temp
-                        sudo mkdir -p /opt/android-sdk/cmdline-tools/latest
-                        sudo mv /opt/android-sdk/cmdline-tools-temp/* /opt/android-sdk/cmdline-tools/latest/
-                        sudo rmdir /opt/android-sdk/cmdline-tools-temp
+                        unzip -q commandlinetools-linux-11076708_latest.zip -d ${WORKSPACE}/android-sdk/
+                        mv ${WORKSPACE}/android-sdk/cmdline-tools ${WORKSPACE}/android-sdk/cmdline-tools-temp
+                        mkdir -p ${WORKSPACE}/android-sdk/cmdline-tools/latest
+                        mv ${WORKSPACE}/android-sdk/cmdline-tools-temp/* ${WORKSPACE}/android-sdk/cmdline-tools/latest/
+                        rmdir ${WORKSPACE}/android-sdk/cmdline-tools-temp
                         rm commandlinetools-linux-11076708_latest.zip
                     fi
 
                     # Set permissions
-                    sudo chown -R jenkins:jenkins /opt/android-sdk
-                    sudo chmod -R 755 /opt/android-sdk
+                    chmod -R 755 ${WORKSPACE}/android-sdk
 
                     # Accept licenses and install required SDK components
-                    export ANDROID_HOME=/opt/android-sdk
-                    export ANDROID_SDK_ROOT=/opt/android-sdk
-                    export PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools
+                    export PATH=$PATH:${WORKSPACE}/android-sdk/cmdline-tools/latest/bin:${WORKSPACE}/android-sdk/platform-tools
 
                     # Accept all licenses
-                    yes | /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+                    yes | ${WORKSPACE}/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
                     # Install required SDK components
-                    /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" || true
+                    ${WORKSPACE}/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" || true
 
-                    echo "✅ Android SDK setup completed"
+                    echo "✅ Android SDK setup completed at ${WORKSPACE}/android-sdk"
                 '''
             }
         }
@@ -189,9 +190,9 @@ EOF
                             cd android
 
                             # Set Android SDK environment variables
-                            export ANDROID_HOME=/opt/android-sdk
-                            export ANDROID_SDK_ROOT=/opt/android-sdk
-                            export PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools
+                            export ANDROID_HOME=${WORKSPACE}/android-sdk
+                            export ANDROID_SDK_ROOT=${WORKSPACE}/android-sdk
+                            export PATH=$PATH:${WORKSPACE}/android-sdk/cmdline-tools/latest/bin:${WORKSPACE}/android-sdk/platform-tools
 
                             # Make gradlew executable (fix permission denied error)
                             chmod +x gradlew
