@@ -16,7 +16,21 @@
     "ios:ps": "shx cp .env.ps   .env && expo run:ios",
     "ios:prod": "shx cp .env.prod .env && expo run:ios",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:coverage-ci": "jest --coverage --watchAll=false",
+    "test:dev": "shx cp .env.dev .env && jest",
+    "test:qa": "shx cp .env.qa .env && jest",
+    "test:ps": "shx cp .env.ps .env && jest",
+    "test:prod": "shx cp .env.prod .env && jest",
+    "test:coverage:dev": "shx cp .env.dev .env && jest --coverage",
+    "test:coverage:qa": "shx cp .env.qa .env && jest --coverage",
+    "test:coverage:ps": "shx cp .env.ps .env && jest --coverage",
+    "test:coverage:prod": "shx cp .env.prod .env && jest --coverage",
+    "sonar": "sonar-scanner",
+    "_production-build-reminder": "IMPORTANT: Before production builds, see doc/production_build_notes.txt to ensure doc/ folder exclusion"
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.1.10",
@@ -41,19 +55,80 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-tab-view": "^4.1.0",
-    "react-native-url-polyfill": "^2.0.0"
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-vector-icons": "^10.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-transform-runtime": "^7.23.4",
     "@expo/cli": "^0.24.20",
     "@react-native-community/cli": "latest",
+    "@testing-library/react-native": "^12.4.2",
+    "@types/jest": "^29.5.8",
     "@types/react": "~19.0.10",
     "@types/react-native-vector-icons": "^6.4.18",
+    "babel-plugin-module-resolver": "^5.0.0",
     "cross-env": "^7.0.3",
     "expo-dev-client": "^5.2.4",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-expo": "~51.0.1",
     "react-native-dotenv": "^3.4.11",
+    "react-test-renderer": "^19.0.0",
     "shx": "^0.4.0",
+    "sonar-scanner": "^3.1.0",
     "typescript": "~5.8.3"
+  },
+  "jest": {
+    "preset": "react-native",
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": [
+        "babel-jest",
+        {
+          "presets": [
+            "babel-preset-expo"
+          ],
+          "plugins": [
+            "react-native-reanimated/plugin"
+          ]
+        }
+      ]
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|react-native-dotenv)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/__tests__/**/*",
+      "!src/**/*.stories.{ts,tsx}",
+      "!src/index.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html",
+      "json"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.(ts|tsx|js)",
+      "**/*.(test|spec).(ts|tsx|js)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
   },
   "private": true
 }

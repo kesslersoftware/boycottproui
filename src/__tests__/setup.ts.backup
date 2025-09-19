@@ -1,0 +1,146 @@
+/**
+ * Jest Setup File for BoycottPro UI Testing
+ *
+ * This file configures the testing environment for React Native components
+ * with support for environment-specific testing (.env files)
+ */
+
+import 'react-native-gesture-handler/jestSetup';
+
+// Mock react-native-reanimated
+jest.mock('react-native-reanimated', () => {
+  const Reanimated = require('react-native-reanimated/mock');
+
+  // The mock for `call` immediately calls the callback which is incorrect
+  // So we override it with a no-op
+  Reanimated.default.call = () => {};
+
+  return Reanimated;
+});
+
+// Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+
+// Mock AsyncStorage
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+// Mock React Navigation
+jest.mock('@react-navigation/native', () => {
+  const actualNav = jest.requireActual('@react-navigation/native');
+  return {
+    ...actualNav,
+    useNavigation: () => ({
+      navigate: jest.fn(),
+      goBack: jest.fn(),
+      reset: jest.fn(),
+      setParams: jest.fn(),
+      dispatch: jest.fn(),
+    }),
+    useRoute: () => ({
+      params: {},
+    }),
+    useFocusEffect: jest.fn(),
+  };
+});
+
+// Mock Expo modules
+jest.mock('expo-status-bar', () => ({
+  StatusBar: 'StatusBar',
+}));
+
+jest.mock('expo-file-system', () => ({
+  documentDirectory: 'file://test/',
+  writeAsStringAsync: jest.fn(),
+  readAsStringAsync: jest.fn(),
+  deleteAsync: jest.fn(),
+}));
+
+// Mock AWS Amplify
+jest.mock('aws-amplify', () => ({
+  configure: jest.fn(),
+  Auth: {
+    signIn: jest.fn(),
+    signUp: jest.fn(),
+    signOut: jest.fn(),
+    currentAuthenticatedUser: jest.fn(),
+    confirmSignUp: jest.fn(),
+    forgotPassword: jest.fn(),
+    forgotPasswordSubmit: jest.fn(),
+  },
+  API: {
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    del: jest.fn(),
+  },
+}));
+
+// Mock environment variables for testing
+// These will be overridden by actual .env files during environment-specific testing
+process.env.API_BASE_URL = 'https://api.test.example.com';
+process.env.COGNITO_USER_POOL_ID = 'test-pool-id';
+process.env.COGNITO_CLIENT_ID = 'test-client-id';
+process.env.AWS_REGION = 'us-east-1';
+
+// Global test utilities
+global.mockFetch = jest.fn();
+global.fetch = global.mockFetch;
+
+// Console suppression for cleaner test output
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Warning: ReactDOM.render is deprecated')
+    ) {
+      return;
+    }
+    originalConsoleError.call(console, ...args);
+  };
+
+  console.warn = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      (args[0].includes('componentWillReceiveProps') ||
+       args[0].includes('componentWillUpdate'))
+    ) {
+      return;
+    }
+    originalConsoleWarn.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+  console.warn = originalConsoleWarn;
+});
+
+// Setup test environment detection
+export const isTestEnvironment = () => process.env.NODE_ENV === 'test';
+
+// Environment-specific test helpers
+export const getTestApiBaseUrl = () => process.env.API_BASE_URL;
+export const getTestCognitoConfig = () => ({
+  userPoolId: process.env.COGNITO_USER_POOL_ID,
+  clientId: process.env.COGNITO_CLIENT_ID,
+  region: process.env.AWS_REGION,
+});
+
+// API mocking utilities for environment-specific testing
+export const mockApiResponse = (data: any, status = 200) => {
+  global.mockFetch.mockResolvedValueOnce({
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => data,
+    text: async () => JSON.stringify(data),
+  });
+};
+
+export const mockApiError = (status = 500, message = 'Internal Server Error') => {
+  global.mockFetch.mockRejectedValueOnce(new Error(message));
+};
