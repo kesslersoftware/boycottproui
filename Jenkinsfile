@@ -319,7 +319,7 @@ EOF
             emailext (
                 subject: "FAILED: React Native Store Build - ${APP_NAME}",
                 body: "React Native store-ready build failed for ${APP_NAME}. Check Jenkins for details.",
-                to: "dylan@kesslersoftware.com"
+                to: "contact+jenkins@kesslersoftware.com"
             )
         }
     }
