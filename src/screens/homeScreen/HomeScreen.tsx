@@ -15,6 +15,9 @@ import {LocalBoycottStore} from "../../services/LocalBoycottStore";
 import {ResponseMessage} from "../../types/misc";
 import {UpgradeUserForm} from "../../types/users/UpgradeUserForm";
 import {signOut} from "aws-amplify/auth";
+import {BTN_TEXT_LOGOUT, HOME_YOUR_STATS_HEADER, HOME_QUICK_VIEW_HEADER, HOME_SEE_MY_STATS_BTN, HOME_TOP_TRENDS_BTN} from "../../../styles/constants";
+import StatsSection from "../../components/statsSection/StatsSection";
+import Constants from 'expo-constants';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Search'>
@@ -159,7 +162,7 @@ export default function HomeScreen() {
             { !loading &&
                 <>
                     <View style={sharedStyles.homeAndSloganView}>
-                        <HomeBackButton label="logout" onPress={handleLogout} />
+                        <HomeBackButton label={BTN_TEXT_LOGOUT} onPress={handleLogout} />
                         <Slogan/>
                     </View>
                     {
@@ -170,55 +173,46 @@ export default function HomeScreen() {
                             </Text>
                         </>
                     }
-                    <Text style={styles.yourStats}>Your Stats:</Text>
-                    <Text style={styles.boycotts}>you are boycotting {companies ? companies.toLocaleString() : '0'} companies/brands</Text>
-                    <Text style={styles.numCauses}>you are following {causes ? causes.toLocaleString() : '0'} causes</Text>
-                    <Text style={styles.quickView}>Quick View:</Text>
-                    <View style={styles.quickViewContent}>
-                        <Text style={styles.topCompany}>top company being boycotted: {topCompany}</Text>
-                        <Text style={styles.numPeople}>number of people boycotting {topCompany}:
-                            {numPeople ? numPeople.toLocaleString() : '0'}</Text>
-                        <Text style={styles.topReason}>top reason people are boycotting {topCompany} :</Text>
-                        <Text style={styles.boycottReason}>{topReason}</Text>
-                        <Text style={styles.topCauseFollowed}>top cause that people are following:</Text>
-                        <Text style={styles.topCause}>{topCause}</Text>
+                    <View style={styles.sectionsContainer}>
+                        <StatsSection
+                            header={HOME_YOUR_STATS_HEADER}
+                            buttonText={HOME_SEE_MY_STATS_BTN}
+                            onButtonPress={() => navigation.navigate('MyTrends')}
+                        >
+                            <Text style={styles.statsText}>you are boycotting {companies ? companies.toLocaleString() : '0'} companies/brands</Text>
+                            <Text style={styles.statsText}>you are following {causes ? causes.toLocaleString() : '0'} causes</Text>
+                        </StatsSection>
+
+                        <StatsSection
+                            header={HOME_QUICK_VIEW_HEADER}
+                            buttonText={HOME_TOP_TRENDS_BTN}
+                            onButtonPress={() => navigation.navigate('TopTrends')}
+                        >
+                            <Text style={styles.statsText}>top company being boycotted: {topCompany}</Text>
+                            <Text style={styles.statsText}>number of people boycotting {topCompany}: {numPeople ? numPeople.toLocaleString() : '0'}</Text>
+                            <Text style={styles.statsText}>top reason people are boycotting {topCompany}: {topReason}</Text>
+                            <Text style={styles.statsText}>top cause that people are following: {topCause}</Text>
+                        </StatsSection>
                     </View>
+
                     <View style={styles.buttonsContent}>
                         {
                             !user?.paying_user &&
                             <Pressable style={styles.upgradeBtn} onPress={upgradeToPaidUser}>
-                                <View style={styles.topTrendsContent}>
-                                    <Text style={styles.topTrendsBtnTxt}>upgrade user</Text>
-                                </View>
+                                <Text style={styles.topTrendsBtnTxt}>upgrade user</Text>
                             </Pressable>
                         }
-                        <Pressable style={styles.topTrendsBtn} onPress={() =>
-                            navigation.navigate('TopTrends')}>
-                            <View style={styles.topTrendsContent}>
-                                <Text style={styles.topTrendsBtnTxt}>Top Trends</Text>
-                            </View>
-                        </Pressable>
-                        <Pressable style={styles.myTrendsBtn} onPress={() =>
-                            navigation.navigate('MyTrends')}>
-                            <View style={styles.myTrendsContent}>
-                                <Text style={styles.myTrendsBtnTxt}>My Trends</Text>
-                            </View>
-                        </Pressable>
                         <Pressable style={styles.profileSettingBtn} onPress={() =>
                             navigation.navigate('ProfileSettings')} >
                             <Text style={styles.profileSettingBtnTxt}>Profile Settings</Text>
                         </Pressable>
-                        <Pressable style={styles.searchBtn} onPress={() => navigation.navigate('Search')}>
-                            <View style={styles.searchBtnContent}>
-                                <Text style={styles.searchBtnTxt}>Search Companies & Causes</Text>
-                            </View>
+                        <Pressable style={styles.profileSettingBtn} onPress={() => navigation.navigate('Search')}>
+                            <Text style={styles.profileSettingBtnTxt}>Search Companies & Causes</Text>
                         </Pressable>
                         {
-                            !user?.paying_user &&
-                            <Pressable style={styles.searchBtn} onPress={resetLocalData}>
-                                <View style={styles.searchBtnContent}>
-                                    <Text style={styles.searchBtnTxt}>reset</Text>
-                                </View>
+                            Constants.expoConfig?.extra?.APP_ENV !== 'prod' &&
+                            <Pressable style={styles.profileSettingBtn} onPress={resetLocalData}>
+                                <Text style={styles.profileSettingBtnTxt}>reset</Text>
                             </Pressable>
                         }
                     </View>

@@ -19,7 +19,7 @@ import LoadingOverlay from "../../components/common/LoadingOverlay";
 import {CauseMetadata} from "../../types/causes/CauseMetadata";
 import { ListItem } from '../../types/types';
 import ConditionalButton from "../../components/button/ConditionalButton";
-import {RES_REGISTER_BTN_HEIGHT, RES_REGISTER_BTN_TOP_MARGIN, RES_REGISTER_BTN_WIDTH} from "../../../styles/constants";
+import {RES_REGISTER_BTN_HEIGHT, RES_REGISTER_BTN_TOP_MARGIN, RES_REGISTER_BTN_WIDTH, BTN_TEXT_BACK} from "../../../styles/constants";
 import {AddCausesForm} from "../../types/users/AddCausesForm";
 import {ResponseMessage} from "../../types/misc";
 import {Reason} from "../../types/users/Reason";
@@ -310,7 +310,7 @@ export default function CauseDetailsScreen() {
                 { !loading &&
                     <>
                         <View style={sharedStyles.homeAndSloganView}>
-                            <HomeBackButton label="back" onPress={() =>
+                            <HomeBackButton label={BTN_TEXT_BACK} onPress={() =>
                                 navigation.goBack()} />
                             <Slogan />
                         </View>

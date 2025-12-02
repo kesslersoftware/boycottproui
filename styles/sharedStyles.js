@@ -19,12 +19,9 @@ export const sharedStyles = StyleSheet.create({
     },
     sloganContent: {
         marginTop: sh * 0.008,
-        width: '60%', // or sw * 0.60
-        marginLeft: 'auto', // pushes it to the right
-        marginRight: sw * 0.0262, // aligns with buttons that use right margin
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        alignItems: 'flex-end',
+        alignItems: 'center',
     },
     errorText: {
         color: DELETE_RED,
@@ -63,7 +60,10 @@ export const sharedStyles = StyleSheet.create({
     },
     homeAndSloganView: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: sw,
+        paddingHorizontal: sw * 0.02,
+        marginTop: sh * 0.01,
     },
     titleContainer: {
         alignItems: 'center',

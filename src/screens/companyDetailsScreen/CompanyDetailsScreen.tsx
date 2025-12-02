@@ -12,7 +12,8 @@ import {
     COMPDTLS_CHG_BTN_HEIGHT,
     COMPDTLS_CHG_BTN_TOP_MARGIN,
     COMPDTLS_CHG_BTN_WIDTH,
-    DELETE_RED
+    DELETE_RED,
+    BTN_TEXT_BACK
 } from "../../../styles/constants";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
@@ -351,7 +352,7 @@ export default function CompanyDetailsScreen() {
             { !loading && !editMode && !changeMode &&
                 <>
                     <View style={sharedStyles.homeAndSloganView}>
-                        <HomeBackButton label="back" onPress={() =>
+                        <HomeBackButton label={BTN_TEXT_BACK} onPress={() =>
                             navigation.goBack()} />
                         <Slogan />
                     </View>

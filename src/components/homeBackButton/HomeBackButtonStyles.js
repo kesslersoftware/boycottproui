@@ -4,10 +4,9 @@ import { BODY_TEXT_DARK, BRIGHT_BLUE } from '../../../styles/constants'
 
 export const styles = StyleSheet.create({
     button: {
-        width: sw * 0.165,
+        flex: 1,
         height: sh * 0.0436,
-        marginLeft: sw * 0.034,
-        marginTop: sh * 0.003,
+        marginRight: sw * 0.02,
         borderRadius: 10,
         backgroundColor: BRIGHT_BLUE,
         justifyContent: 'center',

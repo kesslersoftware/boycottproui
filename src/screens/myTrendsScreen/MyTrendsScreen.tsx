@@ -21,6 +21,7 @@ import { postAnonymousStat } from "../../services/AnonymousStatsService";
 import {ResponseMessage} from "../../types/misc";
 import {sleep} from "../../utils/navigationHelpers";
 import { useIsFocused } from '@react-navigation/native';
+import {BTN_TEXT_HOME} from "../../../styles/constants";
 
 type MyTrendsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'MyTrends'>
 type MyTrendsScreenRouteProp = RouteProp<RootStackParamList, 'MyTrends'>
@@ -229,7 +230,7 @@ export default function MyTrendsScreen() {
                 { !loading &&
                     <>
                     <View style={sharedStyles.homeAndSloganView}>
-                        <HomeBackButton label="Home" onPress={() => navigation.goBack()} />
+                        <HomeBackButton label={BTN_TEXT_HOME} onPress={() => navigation.goBack()} />
                         <Slogan />
                     </View>
                     {

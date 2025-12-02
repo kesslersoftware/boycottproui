@@ -106,14 +106,23 @@ export const styles = StyleSheet.create({
         alignItems: 'left',
         position: 'relative',
     },
+    sectionsContainer: {
+        flex: 1,
+        marginTop: sh * 0.02,
+    },
+    statsText: {
+        fontSize: sh * 0.0153,
+        fontFamily: 'Inter',
+        fontWeight: '700',
+        color: BODY_TEXT_DARK,
+        marginVertical: sh * 0.005,
+    },
     buttonsContent: {
-        marginTop: sh * 0.005,
-        //marginLeft: sw * 0.102,
+        marginTop: sh * 0.02,
         width: '100%',
         flexDirection: 'column',
-        justifyContent: 'left',
-        alignItems: 'left',
-        position: 'relative',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     topCompany: {
         fontSize: sh * 0.0153,

@@ -1,6 +1,7 @@
 import {sh} from "../src/components/screenDimensionsutilitiy";
 
 // defaults
+export const SESSION_FILE_VERSION = 1
 export const APP_BACKGROUND = '#F4F6F8'
 export const HEADER_BACKGROUND = '#0D47A1'
 export const PRIMARY_BLUE = '#1976D2'
@@ -80,7 +81,15 @@ export const COMPDTLS_CHG_BTN_TOP_MARGIN = 0.024
 
 // CauseDetailsScreen - nothing yet
 // HomeScreen
-
+export const LOGO = "keeps track of boycotting strategy"
+export const HOME_YOUR_STATS_HEADER = "Your Stats"
+export const HOME_QUICK_VIEW_HEADER = "Quick View"
+export const HOME_SEE_MY_STATS_BTN = "see\nmy\nstats"
+export const HOME_TOP_TRENDS_BTN = "top\ntrends"
+// Button text constants
+export const BTN_TEXT_LOGOUT = "logout"
+export const BTN_TEXT_BACK = "back"
+export const BTN_TEXT_HOME = "Home"
 // SearchScreen
 export const SS_SEACRH_TOP_MARGIN = sh * 0.0
 export const SS_REASON_TOP_MARGIN = sh * 0.0

@@ -12,7 +12,7 @@ import { getUserById } from '../../api/users';
 import { changeUsername } from '../../api/users';
 import {
     PROFILE_RETURN_BTN_HEIGHT, PROFILE_RETURN_BTN_TOP_MARGIN,
-    PROFILE_RETURN_BTN_WIDTH
+    PROFILE_RETURN_BTN_WIDTH, BTN_TEXT_BACK
 } from "../../../styles/constants";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
@@ -121,7 +121,7 @@ export default function ProfileSettingsScreen() {
             { !loading &&
                 <>
                 <View style={sharedStyles.homeAndSloganView}>
-                    <HomeBackButton label="back" onPress={() => navigation.goBack()} />
+                    <HomeBackButton label={BTN_TEXT_BACK} onPress={() => navigation.goBack()} />
                     <Slogan />
                 </View>
                 {

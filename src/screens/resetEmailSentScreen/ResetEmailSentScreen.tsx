@@ -44,23 +44,27 @@ export default function ResetEmailSentScreen() {
     const handleConfirm = async () => {
         setLoading(true);
         setVisibleError('');
+        console.log("HERE 1");
         try {
             if(!doPasswordsMatch) {
+                console.log("HERE 3");
                 setVisibleError("passwords do not match");
             } else {
                 console.log('🚀 confirm new password request:', {
                     username: username,
                     confirmationCode,
                 });
+                console.log("HERE 2 : password = " + password);
                 const result = await confirmResetPassword({
                     username: username.trim(),
                     confirmationCode: confirmationCode.trim(),
-                    password: password,
+                    newPassword: password,
                 });
                 console.log('✅ confirm new password:', result);
                 setIsSuccess(true);
             }
         } catch (err: any) {
+            console.log("HERE 4");
             const name = err?.name || err?.code;
             console.error('❌ ConfirmSignUp error:', err);
             reset();
@@ -80,6 +84,7 @@ export default function ResetEmailSentScreen() {
                     break;
 
                 default:
+                    console.log("ERROR = " + err?.message);
                     setVisibleError(err?.message || 'Something went wrong. Please try again.');
                     break;
             }

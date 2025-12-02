@@ -15,6 +15,7 @@ import { getTopCauses } from '../../api/causes';
 // @ts-ignore
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import {useUser} from "../../context/UserContext";
+import {BTN_TEXT_BACK} from "../../../styles/constants";
 
 type TopTrendsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'TopTrends'>
 type TopTrendsScreenRouteProp = RouteProp<RootStackParamList, 'TopTrends'>
@@ -73,7 +74,7 @@ export default function TopTrendsScreen() {
                 { !loading &&
                     <>
                         <View style={sharedStyles.homeAndSloganView}>
-                            <HomeBackButton label="back" onPress={() => navigation.goBack()} />
+                            <HomeBackButton label={BTN_TEXT_BACK} onPress={() => navigation.goBack()} />
                             <Slogan />
                         </View>
                         <View style={sharedStyles.titleContainer}>
